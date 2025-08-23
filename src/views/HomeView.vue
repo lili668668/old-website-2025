@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import TheWelcome from '../components/TheWelcome.vue'
+
+// 以 Vite 方式解析本地 Lottie 檔案 URL
+const ballfishRollUrl = new URL('../assets/ballfish-roll.json', import.meta.url).href
 </script>
 
 <template>
   <main>
     <Vue3Lottie
-      animationLink="https://assets2.lottiefiles.com/packages/lf20_GbabwrUY2k.json"
-      :height="200"
-      :width="200"
+      :animationLink="ballfishRollUrl"
+      :width="240"
+      :height="240"
+      :loop="true"
+      :autoPlay="true"
+      :speed="1"
+      direction="forward"
     />
     <TheWelcome />
   </main>
