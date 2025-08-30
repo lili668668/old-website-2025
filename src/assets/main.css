@@ -1,4 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import './base.css';
+
+:root {
+  --pixel-font: 'Press Start 2P', cursive;
+  --main-bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --accent-color: #00ff00;
+  --border-color: #ffffff;
+}
+
+body {
+  background-color: var(--main-bg-color);
+  color: var(--text-color);
+  font-family: var(--pixel-font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  font-size: 16px;
+}
 
 #app {
   max-width: 1280px;
@@ -10,14 +31,15 @@
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+  color: var(--text-color);
+  transition: 0.2s;
   padding: 3px;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: transparent;
+    color: var(--accent-color);
   }
 }
 
@@ -28,8 +50,7 @@ a,
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: block;
     padding: 0 2rem;
   }
 }
