@@ -60,8 +60,7 @@ function resetDescription() {
   border: 4px solid var(--border-color);
   box-shadow: 0 0 10px var(--border-color);
   padding: 2rem;
-  width: 90%;
-  max-width: 700px;
+  width: 100%;
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
 }
