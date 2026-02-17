@@ -1,0 +1,26 @@
+:root {
+  --main-bg-color: #383838;
+  --text-color: #ffffff;
+  --accent-color: #348feb;
+  --border-color: #348feb;
+  --p-font-size: 16px;
+  --title-font-size: 18px;
+  --font-family: monospace;
+}
+
+body {
+  background-color: var(--main-bg-color);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  font-size: var(--p-font-size);
+}
+
+#app {
+  margin: 0 auto;
+  padding: 1rem;
+  font-weight: normal;
+}

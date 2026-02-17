@@ -1,0 +1,14 @@
+{
+  "title": {
+    "about": "Character Introduction",
+    "skill": "Skill Tree",
+    "experience": "Adventures",
+    "games": "Games"
+  },
+  "subtitle": {
+    "about": "About Ballfish",
+    "skill": "Ballfish's skills",
+    "experience": "Ballfish's Experience",
+    "games": "Portfolio (& Games)"
+  }
+}

@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import LangView from '../views/LangView.vue'
 import HomeView from '../views/HomeView.vue'
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
+      name: 'choose-lang',
+      component: LangView,
+    },
+    {
+      path: '/:lang/',
       name: 'home',
       component: HomeView,
     },
@@ -20,4 +26,3 @@ const router = createRouter({
   ],
 })
 
-export default router
