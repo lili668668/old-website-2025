@@ -1,8 +1,8 @@
 <template>
   <div :class="$style.container">
-    <div class="output">
+    <div>
       <p :class="$style.line">Select your language:</p>
-      <router-link
+      <RouterLink
         v-for="(item, index) in languages"
         :key="item.lang"
         :class="$style.option"
@@ -12,7 +12,7 @@
         <span :class="$style.cursor">{{ index === selectedIndex ? '>' : ' ' }}</span>
         <span :class="$style.key">[{{ item.key }}]</span>
         <span :class="$style.label">{{ item.name }}</span>
-      </router-link>
+      </RouterLink>
     </div>
   </div>
 </template>
