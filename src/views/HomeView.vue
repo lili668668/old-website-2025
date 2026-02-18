@@ -1,9 +1,9 @@
 <template>
   <div :class="$style.container">
-    <div class="output">
+    <div :class="$style.output">
       <p :class="$style.title">{{ t('title.home') }}</p>
       <p :class="$style.subtitle">{{ t('subtitle.home') }}</p>
-      <router-link
+      <RouterLink
         v-for="(item, index) in items"
         :key="item.value"
         :class="$style.option"
@@ -13,7 +13,13 @@
         <span :class="$style.cursor">{{ index === selectedIndex ? '>' : ' ' }}</span>
         <span :class="$style.key">[{{ item.key }}]</span>
         <span :class="$style.label">{{ item.name }}</span>
-      </router-link>
+        <span
+          v-if="index === selectedIndex"
+          :class="$style.tip"
+        >
+          &ensp;- {{ t(`subtitle.${item.value}`) }}
+        </span>
+      </RouterLink>
     </div>
   </div>
 </template>
@@ -76,6 +82,32 @@ onUnmounted(() => {
   padding: 20px;
 }
 
+.output {
+  min-width: 300px;
+}
+
+@media (max-width: 700px) {
+  .output {
+    min-width: unset;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .option {
+    flex-wrap: wrap;
+  }
+
+  .label {
+    flex-wrap: wrap;
+    color: var(--accent-color);
+  }
+
+  .tip {
+    flex-wrap: wrap;
+    color: var(--text-color);
+  }
+}
+
 .title {
   font-size: var(--title-font-size);
   color: var(--accent-color)
@@ -113,6 +145,10 @@ onUnmounted(() => {
 
 .label {
   color: var(--accent-color);
+}
+
+.tip {
+  color: var(--text-color);
 }
 
 @keyframes blink {
