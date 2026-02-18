@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class="$style['nav']">
-      <RouterLink to="/" :class="$style['home-button']">
+      <RouterLink to="/" :class="$style['home-button']" @click="($event.currentTarget as HTMLElement)?.blur()">
         <div :class="$style['home-logo']">
           <span></span><span></span><span>{{ c('首') }}</span><span></span><span></span>
           <span></span><span>{{ c('首') }}</span><span>{{ c('頁') }}</span><span>{{ c('首') }}</span><span></span>
@@ -10,7 +10,7 @@
           <span></span><span>{{ c('頁') }}</span><span></span><span>{{ c('首') }}</span><span></span>
         </div>
       </RouterLink>
-      <RouterLink v-if="navigationStore.backPath" :to="navigationStore.backPath" :class="$style['back-button']">
+      <RouterLink v-if="navigationStore.backPath" :to="navigationStore.backPath" :class="$style['back-button']" @click="($event.currentTarget as HTMLElement)?.blur()">
         <div :class="$style['back-logo']">
           <span></span><span></span><span>{{ c('上') }}</span><span></span><span></span><span></span>
           <span></span><span>{{ c('上') }}</span><span></span><span></span><span></span><span></span>

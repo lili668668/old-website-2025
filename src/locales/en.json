@@ -12,5 +12,13 @@
     "skill": "Ballfish's skills",
     "experience": "Ballfish's Experience",
     "game": "Portfolio (& Games)"
+  },
+  "about": {
+    "items": [
+      "Name: Tzu-Yin Hong",
+      "Nickname: Ballfish",
+      "Dream: To become a full-stack engineer",
+      "Wide range of interests: currently enjoys volunteering at open source community conferences, coding, jazz drumming, improv show, and writing novels. Previously loved dragon boat racing."
+    ]
   }
 }

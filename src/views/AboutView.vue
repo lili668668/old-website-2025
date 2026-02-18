@@ -3,66 +3,71 @@
     <div class="output">
       <p :class="$style.title">{{ t('title.about') }}</p>
       <p :class="$style.subtitle">{{ t('subtitle.about') }}</p>
+      <div :class="$style.double">
+        <div :class="$style.sprite">
+          <img :src="currentFrame" alt="ballfish" :class="$style.spriteImg" />
+        </div>
+        <div :class="$style.right">
+          <ul>
+            <li v-for="item in (tm('about.items') as string[])" :key="item">
+              {{ item }}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import { Menu } from '../constants/Menu'
-import { RouterLink } from 'vue-router'
 import { useNavigationStore } from '../stores/navigation'
 import { useLangRoute } from '../composables/useLangRoute'
+import originImg from '../assets/ballfish/origin.png'
+import winkImg from '../assets/ballfish/wink.png'
 
-const { t } = useI18n()
-const router = useRouter()
+const { t, tm } = useI18n()
 const { getPath } = useLangRoute()
 const navigationStore = useNavigationStore()
-const selectedIndex = ref(0)
 
-navigationStore.setBackPath('/')
+const frames = [originImg, winkImg]
+const frameIndex = ref(0)
+const currentFrame = computed(() => frames[frameIndex.value])
+let frameTimer: ReturnType<typeof setInterval> | null = null
 
-const items = [
-  { value: Menu.ABOUT, name: t('title.about'), key: '1' },
-  { value: Menu.SKILL, name: t('title.skill'), key: '2' },
-  { value: Menu.EXPERIENCE, name: t('title.experience'), key: '3' },
-  { value: Menu.GAME, name: t('title.game'), key: '4' },
-]
-
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'ArrowUp' || event.key === 'w') {
-    event.preventDefault()
-    selectedIndex.value = (selectedIndex.value - 1 + items.length) % items.length
-  } else if (event.key === 'ArrowDown' || event.key === 's') {
-    event.preventDefault()
-    selectedIndex.value = (selectedIndex.value + 1) % items.length
-  } else if (event.key === 'Enter') {
-    router.push(getPath(items[selectedIndex.value].value))
-  } else if (event.key >= '1' && event.key <= '4') {
-    const index = parseInt(event.key) - 1
-    router.push(getPath(items[index].value))
-  }
-}
+navigationStore.setBackPath(getPath(''))
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
+  frameTimer = setInterval(() => {
+    frameIndex.value = frameIndex.value === 0 ? 1 : 0
+  }, 400)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown)
+  if (frameTimer) clearInterval(frameTimer)
 })
 </script>
 
 <style module>
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   outline: none;
   font-family: var(--font-family);
   padding: 20px;
+}
+
+.sprite {
+  margin-bottom: 16px;
+}
+
+.spriteImg {
+  width: 128px;
+  height: 128px;
+  image-rendering: pixelated;
 }
 
 .title {
@@ -102,6 +107,16 @@ onUnmounted(() => {
 
 .label {
   color: var(--accent-color);
+}
+
+.double {
+  display: flex;
+  flex-direction: row;
+}
+
+.right {
+  text-align: left;
+  max-width: 250px;
 }
 
 @keyframes blink {
