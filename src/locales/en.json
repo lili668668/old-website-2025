@@ -4,13 +4,13 @@
     "about": "Character Introduction",
     "skill": "Skill Tree",
     "experience": "Adventures",
-    "games": "Games"
+    "game": "Games"
   },
   "subtitle": {
     "home": "Let's explore what's in this fish tank",
     "about": "About Ballfish",
     "skill": "Ballfish's skills",
     "experience": "Ballfish's Experience",
-    "games": "Portfolio (& Games)"
+    "game": "Portfolio (& Games)"
   }
 }
