@@ -1,11 +1,13 @@
 {
   "title": {
+    "home": "球魚の小さな水槽へようこそ",
     "about": "キャラクター",
     "skill": "スキルツリー",
     "experience": "冒険譚",
     "games": "ゲーム"
   },
   "subtitle": {
+    "home": "この水槽の中を探索してみよう",
     "about": "球魚について",
     "skill": "球魚は何ができる？",
     "experience": "球魚の経歴",

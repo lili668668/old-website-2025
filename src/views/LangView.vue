@@ -1,17 +1,17 @@
 <template>
-  <div class="text-adventure">
+  <div :class="$style.container">
     <div class="output">
-      <p class="line">Select your language:</p>
+      <p :class="$style.line">Select your language:</p>
       <router-link
         v-for="(item, index) in languages"
         :key="item.lang"
-        class="option"
+        :class="$style.option"
         :to="`/${item.lang}`"
         @mouseenter="selectedIndex = index"
       >
-        <span class="cursor">{{ index === selectedIndex ? '>' : ' ' }}</span>
-        <span class="key">[{{ item.key }}]</span>
-        <span class="label">{{ item.name }}</span>
+        <span :class="$style.cursor">{{ index === selectedIndex ? '>' : ' ' }}</span>
+        <span :class="$style.key">[{{ item.key }}]</span>
+        <span :class="$style.label">{{ item.name }}</span>
       </router-link>
     </div>
   </div>
@@ -21,10 +21,14 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Lang } from '../constants/Lang'
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
+import { useNavigationStore } from '../stores/navigation'
 
 const router = useRouter()
+const navigationStore = useNavigationStore()
 const selectedIndex = ref(0)
+
+navigationStore.setBackPath(null)
 
 const languages = [
   { lang: Lang.ZH, name: '中文', key: '1' },
@@ -56,8 +60,8 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped>
-.text-adventure {
+<style module>
+.container {
   display: flex;
   justify-content: center;
   align-items: center;

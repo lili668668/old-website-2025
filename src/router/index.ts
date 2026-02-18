@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LangView from '../views/LangView.vue'
 import HomeView from '../views/HomeView.vue'
+import { Lang } from '../constants/Lang'
+import { setLocale } from '../i18n'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,5 +26,14 @@ export const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
   ],
+})
+
+const validLangs = new Set<string>(Object.values(Lang))
+
+router.beforeEach(async (to) => {
+  const lang = to.params.lang as string
+  if (lang && validLangs.has(lang)) {
+    await setLocale(lang as Lang)
+  }
 })
 

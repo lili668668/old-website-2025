@@ -1,11 +1,13 @@
 {
   "title": {
+    "home": "Welcome to Ballfish's Little Fish Tank",
     "about": "Character Introduction",
     "skill": "Skill Tree",
     "experience": "Adventures",
     "games": "Games"
   },
   "subtitle": {
+    "home": "Let's explore what's in this fish tank",
     "about": "About Ballfish",
     "skill": "Ballfish's skills",
     "experience": "Ballfish's Experience",
