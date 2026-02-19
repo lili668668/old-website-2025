@@ -1,20 +1,67 @@
 <template>
   <div :class="$style.container">
-    <div class="output">
-      <p :class="$style.title">{{ t('title.about') }}</p>
-      <p :class="$style.subtitle">{{ t('subtitle.about') }}</p>
-      <div :class="$style.double">
-        <div :class="$style.sprite">
-          <img :src="currentFrame" alt="ballfish" :class="$style.spriteImg" />
-        </div>
-        <div :class="$style.right">
-          <ul>
-            <li v-for="item in (tm('about.items') as string[])" :key="item">
-              {{ item }}
-            </li>
-          </ul>
-        </div>
-      </div>
+    <p :class="$style.title">{{ t('title.about') }}</p>
+    <p :class="$style.subtitle">{{ t('subtitle.about') }}</p>
+    <div :class="$style.diagram">
+      <svg viewBox="0 0 2400 900" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="about-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L8,3 L0,6 Z" fill="#33ff33" />
+          </marker>
+        </defs>
+
+        <!-- Fish sprite image, centered in the diagram -->
+        <image :href="currentFrame" x="961" y="169" width="512" height="512"
+                style="image-rendering: pixelated;" />
+
+        <!-- <image :href="currentFrame" x="1072" y="280" width="256" height="256"
+                style="image-rendering: pixelated;" /> -->
+
+        <!-- 頭頂 → about.name -->
+        <line x1="1200" y1="296" x2="1200" y2="136"
+              stroke="#33ff33" stroke-width="3" marker-end="url(#about-arrow)" />
+        <foreignObject x="880" y="36" width="640" height="92">
+          <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
+            {{ t('about.name') }}
+          </div>
+        </foreignObject>
+
+        <!-- 嘴巴 → about.nickname -->
+        <line x1="1098" y1="420" x2="904" y2="420"
+              stroke="#33ff33" stroke-width="3" marker-end="url(#about-arrow)" />
+        <foreignObject x="420" y="380" width="476" height="92">
+          <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
+            {{ t('about.nickname') }}
+          </div>
+        </foreignObject>
+
+        <!-- 手 → about.dream -->
+        <line x1="1112" y1="380" x2="824" y2="576"
+              stroke="#33ff33" stroke-width="3" marker-end="url(#about-arrow)" />
+        <foreignObject x="420" y="556" width="396" height="130">
+          <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
+            {{ t('about.dream') }}
+          </div>
+        </foreignObject>
+
+        <!-- 肚子 → about.charactor -->
+        <line x1="1170" y1="480" x2="1024" y2="708"
+              stroke="#33ff33" stroke-width="3" marker-end="url(#about-arrow)" />
+        <foreignObject x="520" y="708" width="720" height="310">
+          <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
+            {{ t('about.charactor') }}
+          </div>
+        </foreignObject>
+
+        <!-- 尾巴 → about.interest -->
+        <line x1="1314" y1="376" x2="1496" y2="340"
+              stroke="#33ff33" stroke-width="3" marker-end="url(#about-arrow)" />
+        <foreignObject x="1500" y="116" width="476" height="460">
+          <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
+            {{ t('about.interest') }}
+          </div>
+        </foreignObject>
+      </svg>
     </div>
   </div>
 </template>
@@ -27,7 +74,7 @@ import { useLangRoute } from '../composables/useLangRoute'
 import originImg from '../assets/ballfish/origin.png'
 import winkImg from '../assets/ballfish/wink.png'
 
-const { t, tm } = useI18n()
+const { t } = useI18n()
 const { getPath } = useLangRoute()
 const navigationStore = useNavigationStore()
 
@@ -57,17 +104,7 @@ onUnmounted(() => {
   align-items: center;
   outline: none;
   font-family: var(--font-family);
-  padding: 20px;
-}
-
-.sprite {
-  margin-bottom: 16px;
-}
-
-.spriteImg {
-  width: 128px;
-  height: 128px;
-  image-rendering: pixelated;
+  width: 100%;
 }
 
 .title {
@@ -80,47 +117,14 @@ onUnmounted(() => {
   color: var(--font-color);
 }
 
-.option {
-  display: flex;
-  margin: 4px 0;
-  padding: 8px 0;
-  transition: all 0.1s;
-  text-decoration: none;
-}
-
-.option:hover {
-  background: rgba(51, 255, 51, 0.1);
-}
-
-.cursor {
-  color: #ffff00;
-  margin-right: 8px;
-  display: inline-block;
-  width: 16px;
-  animation: blink 1s infinite;
-}
-
-.key {
-  color: #ff6600;
-  margin-right: 12px;
+.diagram {
+  width: 100%;
 }
 
 .label {
+  font-family: var(--font-family);
+  font-size: 26px;
   color: var(--accent-color);
-}
-
-.double {
-  display: flex;
-  flex-direction: row;
-}
-
-.right {
-  text-align: left;
-  max-width: 250px;
-}
-
-@keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  line-height: 1.5;
 }
 </style>
