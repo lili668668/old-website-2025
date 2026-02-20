@@ -11,6 +11,7 @@
           :key="part.key"
           :class="$style.annotationDot"
           :style="{ top: part.top, left: part.left }"
+          @click="openModal(part.key)"
         >
           <svg :class="$style.raysSvg" viewBox="-40 -40 80 80" xmlns="http://www.w3.org/2000/svg">
             <circle :class="$style.ripple" cx="0" cy="0" r="9" fill="none" />
@@ -33,7 +34,7 @@
 
         <polyline :class="$style.animatedLine" points="1201,300 1074,80 900,80"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
-        <foreignObject x="550" y="40" width="375" height="80">
+        <foreignObject :x="nameX" y="40" :width="nameWidth" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.name') }}
           </div>
@@ -41,13 +42,13 @@
 
         <polyline :class="$style.animatedLine" points="1090,441 940,360 800,360"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
-        <foreignObject x="500" y="325" width="300" height="80">
+        <foreignObject :x="nicknameX" y="325" :width="nicknameWidth" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.nickname') }}
           </div>
         </foreignObject>
 
-        <polyline :class="$style.animatedLine" points="1049,500 924,650 850,650"
+        <polyline :class="$style.animatedLine" :points="charactorPoints"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
         <foreignObject x="0" y="580" width="800" :height="charactorHeight">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
@@ -55,9 +56,9 @@
           </div>
         </foreignObject>
 
-        <polyline :class="$style.animatedLine" points="1245,500 1350,760 1480,760"
+        <polyline :class="$style.animatedLine" :points="dreamPoints"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
-        <foreignObject x="1520" y="680" width="900" height="160">
+        <foreignObject x="1520" :y="dreamTextY" width="900" height="160">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.dream') }}
           </div>
@@ -65,7 +66,7 @@
 
         <polyline :class="$style.animatedLine" points="1409,500 1594,300 1750,300"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
-        <foreignObject x="1800" y="200" width="760" height="300">
+        <foreignObject x="1800" y="200" width="760" :height="interestHeight">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.interest') }}
           </div>
@@ -73,6 +74,15 @@
       </svg>
     </div>
   </div>
+
+  <Teleport to="body">
+    <div v-if="modalVisible" :class="$style.modalOverlay" @click.self="closeModal">
+      <div :class="$style.modalBox">
+        <p :class="$style.modalText">{{ modalText }}</p>
+        <button :class="$style.modalClose" @click="closeModal">✕</button>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -84,16 +94,17 @@ import originImg from '@/assets/ballfish/origin.png'
 import winkImg from '@/assets/ballfish/wink.png'
 import { Lang } from '@/constants/Lang'
 
+const modalText = ref('')
 const { t } = useI18n()
 const { getPath, lang } = useLangRoute()
 const navigationStore = useNavigationStore()
 
 const bodyParts = [
-  { key: 'head',  top: '20%',  left: '40%' },
-  { key: 'mouth', top: '53%', left: '28%' },
-  { key: 'belly', top: '63%', left: '18%' },
-  { key: 'hands', top: '60%', left: '55%' },
-  { key: 'tail',  top: '65%', left: '90%' },
+  { key: 'name',  top: '20%',  left: '40%' },
+  { key: 'nickname', top: '53%', left: '28%' },
+  { key: 'charactor', top: '70%', left: '25%' },
+  { key: 'dream', top: '60%', left: '55%' },
+  { key: 'interest',  top: '65%', left: '90%' },
 ]
 
 const frames = [originImg, winkImg]
@@ -105,8 +116,11 @@ const svgHeight = computed(() => {
       return 1000
     case Lang.EN:
       return 1500
+    case Lang.JA:
+      return 1200
+    default:
+      return 1000
   }
-  return 1000
 })
 const charactorHeight = computed(() => {
   switch (lang) {
@@ -114,9 +128,114 @@ const charactorHeight = computed(() => {
       return 450
     case Lang.EN:
       return 1000
+    case Lang.JA:
+      return 600
+    default:
+      return 450
   }
-  return 450
 })
+const charactorPoints = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return '1049,500 924,650 850,650'
+    case Lang.EN:
+      return '1049,500 924,650 780,650'
+    default:
+      return '1049,500 924,650 850,650'
+  }
+})
+const interestHeight = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 300
+    case Lang.EN:
+      return 700
+    case Lang.JA:
+      return 500
+    default:
+      return 300
+  }
+})
+const dreamTextY = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 680
+    case Lang.EN:
+      return 1000
+    case Lang.JA:
+      return 750
+    default:
+      return 680
+  }
+})
+const dreamPoints = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return '1245,500 1350,760 1480,760'
+    case Lang.EN:
+      return '1245,500 1350,1080 1480,1080'
+    case Lang.JA:
+      return '1245,500 1350,840 1480,840'
+    default:
+      return '1245,500 1350,760 1480,760'
+  }
+})
+const nameWidth = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 375
+    case Lang.EN:
+      return 600
+    default:
+      return 375
+  }
+})
+const nameX = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 550
+    case Lang.EN:
+      return 300
+    default:
+      return 550
+  }
+})
+const nicknameWidth = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 300
+    case Lang.EN:
+      return 600
+    case Lang.JA:
+      return 600
+    default:
+      return 300
+  }
+})
+const nicknameX = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 500
+    case Lang.EN:
+      return 200
+    case Lang.JA:
+      return 200
+    default:
+      return 500
+  }
+})
+
+const modalVisible = ref(false)
+
+function openModal(key: string) {
+  console.log(key)
+  modalVisible.value = true
+  modalText.value = t(`about.${key}`)
+}
+
+function closeModal() {
+  modalVisible.value = false
+}
 
 let frameTimer: ReturnType<typeof setInterval> | null = null
 
@@ -155,6 +274,7 @@ onUnmounted(() => {
 }
 
 .tip {
+  display: none;
   line-height: 0;
   font-size: 12px;
   color: gray;
@@ -199,8 +319,8 @@ onUnmounted(() => {
 
 .raysSvg {
   position: absolute;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -240,6 +360,7 @@ onUnmounted(() => {
 
 .diagram {
   width: 100%;
+  max-width: 800px;
 }
 
 @media (max-width: 500px) {
@@ -250,6 +371,50 @@ onUnmounted(() => {
   .mobileFish {
     display: flex;
   }
+
+  .tip {
+    display: flex;
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalBox {
+  background: var(--bg-color, #1a1a1a);
+  border: 2px solid var(--border-color);
+  box-shadow: 0 0 10px var(--border-color);
+  padding: 32px 40px;
+  position: relative;
+  width: 200px;
+  text-align: center;
+}
+
+.modalText {
+  font-family: var(--font-family);
+  font-size: var(--p-font-size);
+  color: var(--font-color, white);
+  margin: 0;
+}
+
+.modalClose {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--font-color, white);
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
 }
 
 .animatedLine {
