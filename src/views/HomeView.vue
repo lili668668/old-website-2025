@@ -87,6 +87,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 700px) {
+  .container {
+    padding: 0;
+  }
+
   .output {
     min-width: unset;
     word-break: break-word;

@@ -2,8 +2,26 @@
   <div :class="$style.container">
     <p :class="$style.title">{{ t('title.about') }}</p>
     <p :class="$style.subtitle">{{ t('subtitle.about') }}</p>
+    <p :class="$style.tip">{{ t('about.tip') }}</p>
+    <div :class="$style.mobileFish">
+      <div :class="$style.fishWrapper">
+        <img :src="currentFrame" :class="$style.fishImg" />
+        <div
+          v-for="part in bodyParts"
+          :key="part.key"
+          :class="$style.annotationDot"
+          :style="{ top: part.top, left: part.left }"
+        >
+          <svg :class="$style.raysSvg" viewBox="-40 -40 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle :class="$style.ripple" cx="0" cy="0" r="9" fill="none" />
+          </svg>
+          <div :class="$style.dotCenter" />
+        </div>
+      </div>
+    </div>
+
     <div :class="$style.diagram">
-      <svg viewBox="0 0 2600 1000" xmlns="http://www.w3.org/2000/svg">
+      <svg :viewBox="`0 0 2600 ${svgHeight}`" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <marker id="about-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
             <path style="fill: var(--accent-color)" />
@@ -31,7 +49,7 @@
 
         <polyline :class="$style.animatedLine" points="1049,500 924,650 850,650"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
-        <foreignObject x="0" y="580" width="800" height="450">
+        <foreignObject x="0" y="580" width="800" :height="charactorHeight">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.charactor') }}
           </div>
@@ -60,18 +78,46 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useNavigationStore } from '../stores/navigation'
-import { useLangRoute } from '../composables/useLangRoute'
-import originImg from '../assets/ballfish/origin.png'
-import winkImg from '../assets/ballfish/wink.png'
+import { useNavigationStore } from '@/stores/navigation'
+import { useLangRoute } from '@/composables/useLangRoute'
+import originImg from '@/assets/ballfish/origin.png'
+import winkImg from '@/assets/ballfish/wink.png'
+import { Lang } from '@/constants/Lang'
 
 const { t } = useI18n()
-const { getPath } = useLangRoute()
+const { getPath, lang } = useLangRoute()
 const navigationStore = useNavigationStore()
+
+const bodyParts = [
+  { key: 'head',  top: '20%',  left: '40%' },
+  { key: 'mouth', top: '53%', left: '28%' },
+  { key: 'belly', top: '63%', left: '18%' },
+  { key: 'hands', top: '60%', left: '55%' },
+  { key: 'tail',  top: '65%', left: '90%' },
+]
 
 const frames = [originImg, winkImg]
 const frameIndex = ref(0)
 const currentFrame = computed(() => frames[frameIndex.value])
+const svgHeight = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 1000
+    case Lang.EN:
+      return 1500
+  }
+  return 1000
+})
+const charactorHeight = computed(() => {
+  switch (lang) {
+    case Lang.ZH:
+      return 450
+    case Lang.EN:
+      return 1000
+  }
+  return 450
+})
+
 let frameTimer: ReturnType<typeof setInterval> | null = null
 
 navigationStore.setBackPath(getPath(''))
@@ -108,6 +154,12 @@ onUnmounted(() => {
   color: var(--font-color);
 }
 
+.tip {
+  line-height: 0;
+  font-size: 12px;
+  color: gray;
+}
+
 @keyframes drawLine {
   from { stroke-dashoffset: 1000; }
   to { stroke-dashoffset: 0; }
@@ -118,8 +170,86 @@ onUnmounted(() => {
   to { clip-path: inset(0 0% 0 0); }
 }
 
+.mobileFish {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 16px 0;
+}
+
+.fishWrapper {
+  position: relative;
+  width: min(80vw, 80vh);
+  height: min(80vw, 80vh);
+}
+
+.fishImg {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.annotationDot {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+}
+
+.raysSvg {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+}
+
+.ripple {
+  stroke: #888888;
+  stroke-width: 3;
+  fill: none;
+  animation: rippleOut 2s ease-out infinite;
+}
+
+.dotCenter {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #888888;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+@keyframes rippleOut {
+  0% {
+    r: 9;
+    opacity: 1;
+  }
+  100% {
+    r: 20;
+    opacity: 0;
+  }
+}
+
 .diagram {
   width: 100%;
+}
+
+@media (max-width: 500px) {
+  .diagram {
+    display: none;
+  }
+
+  .mobileFish {
+    display: flex;
+  }
 }
 
 .animatedLine {

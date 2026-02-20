@@ -6,5 +6,5 @@ export function useLangRoute() {
   const getPath = (subPath: string) => {
     return `/${lang}/${subPath}`
   }
-  return { getPath }
+  return { getPath, lang }
 }

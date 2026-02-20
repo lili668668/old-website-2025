@@ -46,9 +46,10 @@ function c(char: string): string {
 .rpg-ui {
   border: 4px solid var(--border-color);
   box-shadow: 0 0 10px var(--border-color);
-  padding: 2rem;
-  width: 100%;
-  min-width: 60vh;
+  padding-right: 8px;
+  padding-left: 8px;
+  width: 90%;
+  min-width: 80vw;
   text-align: center;
 }
 
@@ -104,11 +105,5 @@ function c(char: string): string {
 
 .back-logo span {
   text-align: center;
-}
-
-@media (max-width: 700px) {
-  .rpg-ui {
-    min-width: unset;
-  }
 }
 </style>
