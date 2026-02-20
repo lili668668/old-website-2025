@@ -3,57 +3,51 @@
     <p :class="$style.title">{{ t('title.about') }}</p>
     <p :class="$style.subtitle">{{ t('subtitle.about') }}</p>
     <div :class="$style.diagram">
-      <svg viewBox="0 0 2400 1020" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 2600 1000" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <marker id="about-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-            <path d="M0,0 L8,3 L0,6 Z" fill="white" />
+            <path style="fill: var(--accent-color)" />
           </marker>
         </defs>
 
-        <!-- Fish sprite image -->
         <image :href="currentFrame" x="961" y="169" width="512" height="512"
                 style="image-rendering: pixelated;" />
 
-        <!-- 頭頂 (x=1201, y=189) → about.name：向上 -->
-        <line x1="1201" y1="300" x2="1201" y2="150"
-              stroke="white" stroke-width="3" marker-end="url(#about-arrow)" />
-        <foreignObject x="820" y="45" width="760" height="62">
+        <polyline points="1201,300 1074,80 900,80"
+                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <foreignObject x="550" y="40" width="375" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.name') }}
           </div>
         </foreignObject>
 
-        <!-- 嘴巴 (x=1009, y=441) → about.nickname：向左 -->
-        <line x1="1009" y1="441" x2="800" y2="441"
-              stroke="white" stroke-width="3" marker-end="url(#about-arrow)" />
-        <foreignObject x="20" y="411" width="775" height="65">
+        <polyline points="1090,441 940,360 800,360"
+                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <foreignObject x="500" y="325" width="300" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.nickname') }}
           </div>
         </foreignObject>
 
-        <!-- 手 (x=1049, y=361) → about.dream：左下 -->
-        <line x1="1049" y1="361" x2="800" y2="553"
-              stroke="white" stroke-width="3" marker-end="url(#about-arrow)" />
-        <foreignObject x="20" y="533" width="775" height="100">
-          <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
-            {{ t('about.dream') }}
-          </div>
-        </foreignObject>
-
-        <!-- 肚子 (x=1169, y=561) → about.charactor：向下 -->
-        <line x1="1169" y1="561" x2="1000" y2="755"
-              stroke="white" stroke-width="3" marker-end="url(#about-arrow)" />
-        <foreignObject x="100" y="755" width="1050" height="240">
+        <polyline points="1049,500 924,650 850,650"
+                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <foreignObject x="0" y="580" width="800" height="450">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.charactor') }}
           </div>
         </foreignObject>
 
-        <!-- 尾巴 (x=1409, y=361) → about.interest：向右 -->
-        <line x1="1409" y1="361" x2="1530" y2="325"
-              stroke="white" stroke-width="3" marker-end="url(#about-arrow)" />
-        <foreignObject x="1535" y="100" width="840" height="500">
+        <polyline points="1245,500 1350,760 1480,760"
+                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <foreignObject x="1520" y="680" width="900" height="160">
+          <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
+            {{ t('about.dream') }}
+          </div>
+        </foreignObject>
+
+        <polyline points="1409,500 1594,300 1750,300"
+                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <foreignObject x="1800" y="200" width="760" height="300">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.interest') }}
           </div>
@@ -123,5 +117,6 @@ onUnmounted(() => {
   font-size: 50px;
   color: white;
   line-height: 1.5;
+  text-align: left;
 }
 </style>
