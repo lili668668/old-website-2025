@@ -13,7 +13,7 @@
         <image :href="currentFrame" x="961" y="169" width="512" height="512"
                 style="image-rendering: pixelated;" />
 
-        <polyline points="1201,300 1074,80 900,80"
+        <polyline :class="$style.animatedLine" points="1201,300 1074,80 900,80"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
         <foreignObject x="550" y="40" width="375" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
@@ -21,7 +21,7 @@
           </div>
         </foreignObject>
 
-        <polyline points="1090,441 940,360 800,360"
+        <polyline :class="$style.animatedLine" points="1090,441 940,360 800,360"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
         <foreignObject x="500" y="325" width="300" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
@@ -29,7 +29,7 @@
           </div>
         </foreignObject>
 
-        <polyline points="1049,500 924,650 850,650"
+        <polyline :class="$style.animatedLine" points="1049,500 924,650 850,650"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
         <foreignObject x="0" y="580" width="800" height="450">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
@@ -37,7 +37,7 @@
           </div>
         </foreignObject>
 
-        <polyline points="1245,500 1350,760 1480,760"
+        <polyline :class="$style.animatedLine" points="1245,500 1350,760 1480,760"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
         <foreignObject x="1520" y="680" width="900" height="160">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
@@ -45,7 +45,7 @@
           </div>
         </foreignObject>
 
-        <polyline points="1409,500 1594,300 1750,300"
+        <polyline :class="$style.animatedLine" points="1409,500 1594,300 1750,300"
                   fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
         <foreignObject x="1800" y="200" width="760" height="300">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
@@ -108,8 +108,24 @@ onUnmounted(() => {
   color: var(--font-color);
 }
 
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes wipeIn {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0% 0 0); }
+}
+
 .diagram {
   width: 100%;
+}
+
+.animatedLine {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 1s ease-out forwards;
 }
 
 .label {
@@ -118,5 +134,7 @@ onUnmounted(() => {
   color: white;
   line-height: 1.5;
   text-align: left;
+  clip-path: inset(0 100% 0 0);
+  animation: wipeIn 0.4s ease-out 0.6s forwards;
 }
 </style>
