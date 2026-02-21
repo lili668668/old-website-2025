@@ -20,5 +20,65 @@
     "charactor": "Introverted and shy by nature, but enjoys being around people. Tends to look for answers independently when facing problems, loves sharing progress when projects hit new milestones, and prefers thinking about product design over simply finishing projects.",
     "interest": "Wide range of interests: currently enjoys volunteering at open source community conferences, coding, jazz drumming, improv show, and writing novels. Previously loved dragon boat racing.",
     "tip": "Please click the white dots"
+  },
+  "skill": {
+    "frontend": {
+      "title": "Web Frontend",
+      "React": "React",
+      "Vue": "Vue",
+      "HTML/CSS/JavaScript(TypeScript)": "HTML/CSS/JavaScript(TypeScript)"
+    },
+    "backend": {
+      "title": "Web Backend",
+      "Laravel": "PHP/Laravel",
+      "NodeJS": "NodeJS/Express",
+      "Rust": "Rust/Rocket",
+      "GraphQL": "Apollo GraphQL, Rust/Seaography",
+      "GRPC": "NodeJS/GRPC"
+    },
+    "data": {
+      "title": "Data Storage",
+      "MySQL": "MySQL",
+      "MongoDB": "MongoDB",
+      "ClickHouse": "ClickHouse",
+      "Redis": "Redis",
+      "SeaweedFS": "SeaweedFS"
+    },
+    "language": {
+      "title": "Programming Languages",
+      "JavaScript/TypeScript": "JavaScript/TypeScript",
+      "PHP": "PHP",
+      "Python3": "Python3",
+      "Rust": "Rust",
+      "Dart": "Dart",
+      "C#": "C#",
+      "Golang": "Golang",
+      "Java": "Java"
+    },
+    "app": {
+      "title": "Mobile Applications",
+      "Flutter": "Dart/Flutter",
+      "Capacitor": "JavaScript/Capacitor"
+    },
+    "infra": {
+      "title": "Infrastructure & DevOps",
+      "CI": "GitLab CI, GitHub CI",
+      "CD": "ArgoCD",
+      "docker": "docker/docker compose/kubernetes",
+      "ansible": "Ansible",
+      "terraform": "Terraform"
+    },
+    "cloud": {
+      "title": "Cloud Platforms",
+      "GCP": "GCP",
+      "China": "Tencent Cloud, Alibaba Cloud, Huawei Cloud",
+      "VPS": "Linode"
+    },
+    "else": {
+      "title": "Others",
+      "Linux": "Linux commands",
+      "git": "git commands",
+      "vim": "vim enthusiast"
+    }
   }
 }
