@@ -4,6 +4,28 @@
       <p :class="$style.title">{{ t('title.skill') }}</p>
       <p :class="$style.subtitle">{{ t('subtitle.skill') }}</p>
     </div>
+    <!-- Mobile tree view (< 930px) -->
+    <div :class="$style.treeView">
+      <div :class="$style.treeItem">
+        $ cd /skills
+        <br />
+        $ tree
+      </div>
+      <div :class="$style.treeLine">
+        <span :class="$style.treeRoot">{{ t('title.skill') }}</span>
+      </div>
+      <template v-for="(group, gi) in skillGroups" :key="`tv-g-${gi}`">
+        <div :class="$style.treeLine">
+          <span :class="$style.treeChar">{{ gi === skillGroups.length - 1 ? '└── ' : '├── ' }}</span>
+          <span :class="$style.treeCat" :style="{ color: COLORS[gi] }">{{ t(`skill.${group.key}.title`) }}</span>
+        </div>
+        <div v-for="(item, ii) in group.items" :key="`tv-i-${gi}-${ii}`" :class="$style.treeLine">
+          <span :class="$style.treeChar">{{ gi === skillGroups.length - 1 ? '    ' : '│   ' }}{{ ii === group.items.length - 1 ? '└── ' : '├── ' }}</span>
+          <span :class="$style.treeItem">{{ t(`skill.${group.key}.${item}`) }}</span>
+        </div>
+      </template>
+    </div>
+
     <div :class="$style.mapWrapper">
       <svg
         :width="SVG_W"
@@ -210,6 +232,44 @@ function curve(x1: number, y1: number, x2: number, y2: number): string {
   width: 100%;
 }
 
+.treeView {
+  display: none;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  padding: 16px 24px 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.treeLine {
+  display: flex;
+  align-items: baseline;
+}
+
+.treeRoot {
+  font-weight: bold;
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+.treeChar {
+  color: #aaa;
+  flex-shrink: 0;
+  white-space: pre;
+}
+
+.treeCat {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.treeItem {
+  color: var(--text-color);
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
 .mapWrapper {
   width: 100%;
   overflow-x: auto;
@@ -219,5 +279,15 @@ function curve(x1: number, y1: number, x2: number, y2: number): string {
 .svg {
   display: block;
   margin: 0 auto;
+}
+
+@media (max-width: 930px) {
+  .mapWrapper {
+    display: none;
+  }
+
+  .treeView {
+    display: block;
+  }
 }
 </style>
