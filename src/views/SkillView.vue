@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <div class="output">
+    <div :class="$style.output">
       <p :class="$style.title">{{ t('title.skill') }}</p>
       <p :class="$style.subtitle">{{ t('subtitle.skill') }}</p>
     </div>
@@ -43,11 +43,10 @@
         <path
           v-for="(g, gi) in positions"
           :key="`rc-${gi}`"
-          :d="curve(ROOT_X + ROOT_W, rootCenterY, CAT_X, g.catY)"
+          :d="curve(ROOT_X + ROOT_W, rootCenterY, g.catX, g.catY)"
           fill="none"
           :stroke="COLORS[gi]"
-          stroke-width="2"
-          stroke-opacity="0.55"
+          stroke-width="4"
         />
 
         <!-- Category → Item connections -->
@@ -55,44 +54,37 @@
           <path
             v-for="(iy, ii) in g.itemYs"
             :key="`ci-${gi}-${ii}`"
-            :d="curve(CAT_X + CAT_W, g.catY, ITEM_X, iy)"
+            :d="curve(g.catX + CAT_W, g.catY, g.itemData[ii].x, iy)"
             fill="none"
             :stroke="COLORS[gi]"
-            stroke-width="1.5"
-            stroke-opacity="0.38"
+            stroke-width="2"
           />
         </template>
 
         <!-- Item nodes -->
         <template v-for="(g, gi) in positions" :key="`in-g-${gi}`">
           <g v-for="(iy, ii) in g.itemYs" :key="`in-${gi}-${ii}`">
-            <rect
-              :x="ITEM_X"
-              :y="iy - ITEM_H / 2"
-              :width="ITEM_W"
-              :height="ITEM_H"
-              rx="8"
-              fill="white"
-              :stroke="COLORS[gi]"
-              stroke-width="1.5"
-              filter="url(#sk-shadow)"
-            />
             <text
-              :x="ITEM_X + ITEM_W / 2"
-              :y="iy"
-              text-anchor="middle"
+              text-anchor="start"
               dominant-baseline="central"
-              :fill="COLORS[gi]"
+              fill="#ffffff"
               font-size="11.5"
               font-family="var(--font-family, sans-serif)"
-            >{{ t(`skill.${skillGroups[gi].key}.${skillGroups[gi].items[ii]}`) }}</text>
+            >
+              <tspan
+                v-for="(line, li) in g.itemData[ii].lines"
+                :key="li"
+                :x="g.itemData[ii].x + ITEM_PAD_X"
+                :y="iy + (li - (g.itemData[ii].lines.length - 1) / 2) * ITEM_LINE_H"
+              >{{ line }}</tspan>
+            </text>
           </g>
         </template>
 
         <!-- Category nodes -->
         <g v-for="(g, gi) in positions" :key="`cn-${gi}`">
           <rect
-            :x="CAT_X"
+            :x="g.catX"
             :y="g.catY - CAT_H / 2"
             :width="CAT_W"
             :height="CAT_H"
@@ -101,7 +93,7 @@
             filter="url(#sk-shadow)"
           />
           <text
-            :x="CAT_X + CAT_W / 2"
+            :x="g.catX + CAT_W / 2"
             :y="g.catY"
             text-anchor="middle"
             dominant-baseline="central"
@@ -138,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useNavigationStore } from '@/stores/navigation'
 import { useLangRoute } from '@/composables/useLangRoute'
@@ -167,18 +159,23 @@ const ROOT_W = 110
 const ROOT_H = 48
 
 const CAT_X = 200
-const CAT_W = 158
+const CAT_W = 190
 const CAT_H = 40
 
-const ITEM_X = 422
-const ITEM_W = 292
-const ITEM_H = 30
+const ITEM_X       = 500
+const ITEM_PAD_X   = 6    // left padding inside item box
+const ITEM_LINE_H  = 15   // px per text line
+const ITEM_V_PAD   = 14   // vertical padding inside item box
+const ITEM_H_MIN   = 30   // minimum item box height
+const ITEM_STAGGER = 50  // x offset for odd-indexed items
 
-const ITEM_GAP  = 40   // vertical distance between item centres
-const GROUP_GAP = 24   // extra space between category groups
+const CAT_STAGGER  = 100  // x offset for odd-indexed categories
+
+const ITEM_GAP  = 10   // gap between consecutive item boxes
+const GROUP_GAP = 28   // extra space between category groups
 const PAD_TOP   = 48
 const PAD_BOT   = 48
-const SVG_W     = 740
+const SVG_W     = 1100
 
 // ── Category colours ──────────────────────────────────────────
 const COLORS = [
@@ -192,21 +189,63 @@ const COLORS = [
   '#9c6b98',  // else      – purple
 ]
 
+// ── Helpers: multi-line text ───────────────────────────────────
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 0)
+function onResize() { windowWidth.value = window.innerWidth }
+onMounted(() => window.addEventListener('resize', onResize))
+onUnmounted(() => window.removeEventListener('resize', onResize))
+const isWide = computed(() => windowWidth.value > 1100)
+
+function getLines(text: string): string[] {
+  if (isWide.value) return [text]
+  return text
+    .split(/[、,]\s/)
+    .flatMap(part => part.split(/(?<=\/)/))
+    .map(s => s.trim())
+    .filter(Boolean)
+}
+
+function getItemBoxH(lineCount: number): number {
+  return Math.max(ITEM_H_MIN, lineCount * ITEM_LINE_H + ITEM_V_PAD)
+}
+
+// 中心最大、邊緣最小的山形偏移量
+function mountainOffset(i: number, n: number, maxOffset: number): number {
+  if (n <= 1) return maxOffset
+  return maxOffset * (1 - Math.abs(2 * i / (n - 1) - 1))
+}
+
 // ── Computed layout ───────────────────────────────────────────
 const positions = computed(() => {
   let y = PAD_TOP
-  return skillGroups.map((group) => {
-    const n = group.items.length
-    const itemYs = Array.from({ length: n }, (_, i) => y + i * ITEM_GAP + ITEM_GAP / 2)
-    const catY = (itemYs[0] + itemYs[n - 1]) / 2
-    y += n * ITEM_GAP + GROUP_GAP
-    return { catY, itemYs }
+  return skillGroups.map((group, gi) => {
+    const catX = CAT_X + mountainOffset(gi, skillGroups.length, CAT_STAGGER)
+
+    const itemData = group.items.map((item, ii) => {
+      const lines = getLines(t(`skill.${group.key}.${item}`))
+      const h = getItemBoxH(lines.length)
+      const x = ITEM_X + mountainOffset(ii, group.items.length, ITEM_STAGGER)
+      return { lines, h, x }
+    })
+
+    const itemYs: number[] = []
+    let curY = y
+    itemData.forEach((item) => {
+      itemYs.push(curY + item.h / 2)
+      curY += item.h + ITEM_GAP
+    })
+
+    const catY = (itemYs[0] + itemYs[itemYs.length - 1]) / 2
+    y = curY - ITEM_GAP + GROUP_GAP
+
+    return { catX, catY, itemYs, itemData }
   })
 })
 
 const svgHeight = computed(() => {
   const last = positions.value[positions.value.length - 1]
-  return last.itemYs[last.itemYs.length - 1] + ITEM_GAP / 2 + PAD_BOT
+  const lastIdx = last.itemData.length - 1
+  return last.itemYs[lastIdx] + last.itemData[lastIdx].h / 2 + PAD_BOT
 })
 
 const rootCenterY = computed(() => {
@@ -226,10 +265,28 @@ function curve(x1: number, y1: number, x2: number, y2: number): string {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   outline: none;
   font-family: var(--font-family);
   width: 100%;
+}
+
+.output {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.title {
+  font-size: var(--title-font-size);
+  color: var(--accent-color)
+}
+
+.subtitle {
+  font-size: var(--p-font-size);
+  color: var(--font-color);
 }
 
 .treeView {
@@ -272,8 +329,7 @@ function curve(x1: number, y1: number, x2: number, y2: number): string {
 
 .mapWrapper {
   width: 100%;
-  overflow-x: auto;
-  padding: 16px 0 48px;
+  max-width: 600px;
 }
 
 .svg {
@@ -281,7 +337,7 @@ function curve(x1: number, y1: number, x2: number, y2: number): string {
   margin: 0 auto;
 }
 
-@media (max-width: 930px) {
+@media (max-width: 840px) {
   .mapWrapper {
     display: none;
   }
