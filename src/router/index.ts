@@ -26,6 +26,11 @@ export const router = createRouter({
       name: 'skill',
       component: () => import('../views/SkillView.vue'),
     },
+    {
+      path: '/:lang/experience',
+      name: 'experience',
+      component: () => import('../views/ExperienceView.vue'),
+    },
   ],
 })
 
