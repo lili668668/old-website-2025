@@ -281,12 +281,14 @@ function curve(x1: number, y1: number, x2: number, y2: number): string {
 
 .title {
   font-size: var(--title-font-size);
-  color: var(--accent-color)
+  color: var(--accent-color);
+  margin: 8px 0 8px 0;
 }
 
 .subtitle {
   font-size: var(--p-font-size);
   color: var(--font-color);
+  margin: 0;
 }
 
 .treeView {

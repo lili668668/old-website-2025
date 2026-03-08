@@ -75,14 +75,9 @@
     </div>
   </div>
 
-  <Teleport to="body">
-    <div v-if="modalVisible" :class="$style.modalOverlay" @click.self="closeModal">
-      <div :class="$style.modalBox">
-        <p :class="$style.modalText">{{ modalText }}</p>
-        <button :class="$style.modalClose" @click="closeModal">✕</button>
-      </div>
-    </div>
-  </Teleport>
+  <BaseDialog :open="modalVisible" dense @close="closeModal">
+    <p :class="$style.modalText">{{ modalText }}</p>
+  </BaseDialog>
 </template>
 
 <script setup lang="ts">
@@ -93,6 +88,7 @@ import { useLangRoute } from '@/composables/useLangRoute'
 import originImg from '@/assets/ballfish/origin.png'
 import winkImg from '@/assets/ballfish/wink.png'
 import { Lang } from '@/constants/Lang'
+import BaseDialog from '@/components/BaseDialog.vue'
 
 const modalText = ref('')
 const { t } = useI18n()
@@ -265,12 +261,14 @@ onUnmounted(() => {
 
 .title {
   font-size: var(--title-font-size);
-  color: var(--accent-color)
+  color: var(--accent-color);
+  margin: 8px 0 8px 0;
 }
 
 .subtitle {
   font-size: var(--p-font-size);
   color: var(--font-color);
+  margin: 0;
 }
 
 .tip {
@@ -377,44 +375,12 @@ onUnmounted(() => {
   }
 }
 
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modalBox {
-  background: var(--bg-color, #1a1a1a);
-  border: 2px solid var(--border-color);
-  box-shadow: 0 0 10px var(--border-color);
-  padding: 32px 40px;
-  position: relative;
-  width: 200px;
-  text-align: center;
-}
-
 .modalText {
   font-family: var(--font-family);
   font-size: var(--p-font-size);
   color: var(--font-color, white);
   margin: 0;
-}
-
-.modalClose {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  background: none;
-  border: none;
-  color: var(--font-color, white);
-  font-size: 18px;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
+  text-align: center;
 }
 
 .animatedLine {
