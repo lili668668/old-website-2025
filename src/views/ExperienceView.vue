@@ -232,12 +232,15 @@ const handleKeyDown = (e: KeyboardEvent) => {
   checkGhostCollision()
 }
 
+const frightenedUntil = ref(0)
+
 const checkGhostCollision = () => {
   const px = dotX.value, py = dotY.value
   for (const ghost of ghosts.value) {
     const dx = px - ghost.x, dy = py - ghost.y
     if (dx * dx + dy * dy < 144) { // 12px = sum of visual radii
       score.value = 0
+      frightenedUntil.value = Date.now() + 5000
       return
     }
   }
@@ -299,14 +302,16 @@ const stepGhosts = () => {
 
   const px = dotX.value, py = dotY.value
 
+  const frightened = Date.now() < frightenedUntil.value
+
   for (const ghost of ghosts.value) {
-    // sort directions by resulting distance to player (closest first)
+    // chase: closest first / frightened: farthest first
     const sorted = ([0, 1, 2, 3] as Dir[]).sort((a, b) => {
       const [ax, ay] = DIR_VECS[a]
       const [bx, by] = DIR_VECS[b]
       const da = (ghost.x + ax - px) ** 2 + (ghost.y + ay - py) ** 2
       const db = (ghost.x + bx - px) ** 2 + (ghost.y + by - py) ** 2
-      return da - db
+      return frightened ? db - da : da - db
     })
 
     for (const d of sorted) {
@@ -348,7 +353,7 @@ let lastWidth = 0
 onMounted(async () => {
   window.addEventListener('keydown', handleKeyDown)
   await initGame()
-  ghostInterval = setInterval(stepGhosts, 40)
+  ghostInterval = setInterval(stepGhosts, 25)
   lastWidth = window.innerWidth
   resizeObserver = new ResizeObserver(() => {
     if (window.innerWidth !== lastWidth) {
