@@ -3,12 +3,14 @@
     <div :class="$style.output">
       <p :class="$style.title">{{ t('title.experience') }}</p>
       <p :class="$style.subtitle">{{ t('subtitle.experience') }}</p>
+      <p :class="$style.subtitle">Score: {{ score }}</p>
     </div>
-    <div :class="$style.cards">
+    <div :class="$style.cards" ref="cardsRef">
       <div
         v-for="key in experienceKeys"
         :key="key"
         :class="[$style.card, $style[key]]"
+        data-card
       >
         <div :class="$style.cardHeader">
           <p :class="$style.cardTitle">{{ t(`experienceKey.${key}`) }}</p>
@@ -24,6 +26,27 @@
           </li>
         </ul>
       </div>
+      <div
+        v-for="p in pellets"
+        :key="p.id"
+        :class="$style.pellet"
+        :style="{ left: p.x + 'px', top: p.y + 'px' }"
+      />
+      <div
+        v-for="(ghost, i) in ghosts"
+        :key="'ghost-' + i"
+        :class="$style.ghost"
+        :style="{
+          left: ghost.x + 'px',
+          top: ghost.y + 'px',
+          background: ghost.color,
+          boxShadow: `0 0 6px ${ghost.color}, 0 0 12px ${ghost.color}80`,
+        }"
+      />
+      <div
+        :class="$style.dot"
+        :style="{ left: dotX + 'px', top: dotY + 'px' }"
+      />
     </div>
 
     <BaseDialog :open="!!dialogKey" :title="dialogKey ? t(`experienceKey.${dialogKey}`) : ''" @close="closeDialog">
@@ -37,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useNavigationStore } from '../stores/navigation'
 import { useLangRoute } from '../composables/useLangRoute'
@@ -60,6 +83,287 @@ const experienceKeys = [
   'g0v',
   'else',
 ]
+
+const cardsRef = ref<HTMLElement | null>(null)
+const COLLISION_RADIUS = 2
+const STEP = 12
+const dotX = ref(8)
+const dotY = ref(8)
+
+const checkBlocked = (
+  x: number, y: number,
+  containerRect: DOMRect,
+  cards: NodeListOf<Element>,
+  radius = COLLISION_RADIUS,
+) => {
+  if (x - radius < 0 || x + radius > containerRect.width) return true
+  if (y - radius < 0 || y + radius > containerRect.height) return true
+  for (const card of cards) {
+    const r = card.getBoundingClientRect()
+    const cardLeft = r.left - containerRect.left
+    const cardTop = r.top - containerRect.top
+    const closestX = Math.max(cardLeft, Math.min(x, cardLeft + r.width))
+    const closestY = Math.max(cardTop, Math.min(y, cardTop + r.height))
+    const dx = x - closestX
+    const dy = y - closestY
+    if (dx * dx + dy * dy < radius * radius) return true
+  }
+  return false
+}
+
+// --- pellets ---
+const PELLET_SPACING = 8
+const COLLECT_RADIUS = 10
+
+interface Pellet { id: number; x: number; y: number }
+const pellets = ref<Pellet[]>([])
+const allEaten = ref(false)
+const score = ref(0)
+
+const generatePellets = (containerRect: DOMRect, cards: NodeListOf<Element>) => {
+  const W = containerRect.width
+  const H = containerRect.height
+  // corridor gap is 16px; walkable band ≈ 16 - 2*COLLISION_RADIUS = 12px
+  const NARROW = 18
+
+  // cache card rects relative to container (avoids repeated getBoundingClientRect)
+  const cardRects = Array.from(cards).map(card => {
+    const r = card.getBoundingClientRect()
+    return {
+      l: r.left - containerRect.left,
+      t: r.top - containerRect.top,
+      r: r.left - containerRect.left + r.width,
+      b: r.top - containerRect.top + r.height,
+    }
+  })
+
+  const isBlocked = (x: number, y: number) => {
+    if (x - COLLISION_RADIUS < 0 || x + COLLISION_RADIUS > W) return true
+    if (y - COLLISION_RADIUS < 0 || y + COLLISION_RADIUS > H) return true
+    for (const c of cardRects) {
+      const cx = Math.max(c.l, Math.min(x, c.r))
+      const cy = Math.max(c.t, Math.min(y, c.b))
+      const dx = x - cx, dy = y - cy
+      if (dx * dx + dy * dy < COLLISION_RADIUS * COLLISION_RADIUS) return true
+    }
+    return false
+  }
+
+  const placed = new Set<string>()
+  const snap = PELLET_SPACING * 0.7
+  const result: Pellet[] = []
+  let id = 0
+
+  const tryAdd = (x: number, y: number) => {
+    const key = `${Math.round(x / snap)},${Math.round(y / snap)}`
+    if (placed.has(key)) return
+    placed.add(key)
+    result.push({ id: id++, x: Math.round(x), y: Math.round(y) })
+  }
+
+  // X-scan: one dot per narrow Y-segment (horizontal corridor lines)
+  for (let x = PELLET_SPACING; x <= W - PELLET_SPACING; x += PELLET_SPACING) {
+    let start: number | null = null
+    for (let y = 0; y <= H + 1; y++) {
+      const blocked = y > H || isBlocked(x, y)
+      if (!blocked && start === null) { start = y }
+      else if (blocked && start !== null) {
+        if (y - start <= NARROW) tryAdd(x, (start + y - 1) / 2)
+        start = null
+      }
+    }
+  }
+
+  // Y-scan: one dot per narrow X-segment (vertical corridor lines)
+  for (let y = PELLET_SPACING; y <= H - PELLET_SPACING; y += PELLET_SPACING) {
+    let start: number | null = null
+    for (let x = 0; x <= W + 1; x++) {
+      const blocked = x > W || isBlocked(x, y)
+      if (!blocked && start === null) { start = x }
+      else if (blocked && start !== null) {
+        if (x - start <= NARROW) tryAdd((start + x - 1) / 2, y)
+        start = null
+      }
+    }
+  }
+
+  return result
+}
+
+const collectPellets = () => {
+  const r2 = COLLECT_RADIUS * COLLECT_RADIUS
+  const px = dotX.value, py = dotY.value
+  const before = pellets.value.length
+  pellets.value = pellets.value.filter(p => {
+    const dx = px - p.x, dy = py - p.y
+    return dx * dx + dy * dy > r2
+  })
+  score.value += before - pellets.value.length
+  if (before > 0 && pellets.value.length === 0) allEaten.value = true
+}
+
+// --- player ---
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return
+  if (dialogKey.value) return
+
+  const container = cardsRef.value
+  if (!container) return
+
+  e.preventDefault()
+
+  const containerRect = container.getBoundingClientRect()
+  const cards = container.querySelectorAll('[data-card]')
+
+  let dx = 0, dy = 0
+  if (e.key === 'ArrowLeft') dx = -1
+  if (e.key === 'ArrowRight') dx = 1
+  if (e.key === 'ArrowUp') dy = -1
+  if (e.key === 'ArrowDown') dy = 1
+
+  for (let i = 0; i < STEP; i++) {
+    const newX = dotX.value + dx
+    const newY = dotY.value + dy
+    if (checkBlocked(newX, newY, containerRect, cards)) break
+    dotX.value = newX
+    dotY.value = newY
+  }
+  collectPellets()
+  checkGhostCollision()
+}
+
+const checkGhostCollision = () => {
+  const px = dotX.value, py = dotY.value
+  for (const ghost of ghosts.value) {
+    const dx = px - ghost.x, dy = py - ghost.y
+    if (dx * dx + dy * dy < 144) { // 12px = sum of visual radii
+      score.value = 0
+      return
+    }
+  }
+}
+
+type Dir = 0 | 1 | 2 | 3
+const DIR_VECS: [number, number][] = [[1,0],[-1,0],[0,1],[0,-1]]
+
+interface Ghost {
+  x: number
+  y: number
+  color: string
+  dir: Dir
+}
+
+const GHOST_CONFIGS = [
+  { color: '#ff4444' },
+  { color: '#ff88cc' },
+  { color: '#00e5ff' },
+  { color: '#ff9900' },
+]
+
+const ghosts = ref<Ghost[]>(
+  GHOST_CONFIGS.map((g, i) => ({
+    x: 0,
+    y: 0,
+    color: g.color,
+    dir: (i % 4) as Dir,
+  }))
+)
+
+const GHOST_VISUAL_RADIUS = 6
+const ghostSpawnPool: { x: number; y: number }[] = []
+
+const buildGhostSpawnPool = (containerRect: DOMRect, cards: NodeListOf<Element>) => {
+  ghostSpawnPool.length = 0
+  const step = 4
+  for (let x = GHOST_VISUAL_RADIUS; x <= containerRect.width - GHOST_VISUAL_RADIUS; x += step) {
+    for (let y = GHOST_VISUAL_RADIUS; y <= containerRect.height - GHOST_VISUAL_RADIUS; y += step) {
+      if (!checkBlocked(x, y, containerRect, cards, GHOST_VISUAL_RADIUS)) {
+        ghostSpawnPool.push({ x, y })
+      }
+    }
+  }
+}
+
+const randomValidPosition = () => {
+  if (ghostSpawnPool.length === 0) return { x: GHOST_VISUAL_RADIUS, y: GHOST_VISUAL_RADIUS }
+  return ghostSpawnPool[Math.floor(Math.random() * ghostSpawnPool.length)]
+}
+
+let ghostInterval: ReturnType<typeof setInterval> | null = null
+
+const stepGhosts = () => {
+  const container = cardsRef.value
+  if (!container) return
+  const containerRect = container.getBoundingClientRect()
+  const cards = container.querySelectorAll('[data-card]')
+
+  const px = dotX.value, py = dotY.value
+
+  for (const ghost of ghosts.value) {
+    // sort directions by resulting distance to player (closest first)
+    const sorted = ([0, 1, 2, 3] as Dir[]).sort((a, b) => {
+      const [ax, ay] = DIR_VECS[a]
+      const [bx, by] = DIR_VECS[b]
+      const da = (ghost.x + ax - px) ** 2 + (ghost.y + ay - py) ** 2
+      const db = (ghost.x + bx - px) ** 2 + (ghost.y + by - py) ** 2
+      return da - db
+    })
+
+    for (const d of sorted) {
+      const [vx, vy] = DIR_VECS[d]
+      const nx = ghost.x + vx
+      const ny = ghost.y + vy
+      if (!checkBlocked(nx, ny, containerRect, cards)) {
+        ghost.x = nx
+        ghost.y = ny
+        ghost.dir = d
+        break
+      }
+    }
+  }
+}
+
+const initGame = async () => {
+  await nextTick()
+  const container = cardsRef.value
+  if (!container) return
+  const containerRect = container.getBoundingClientRect()
+  const cards = container.querySelectorAll('[data-card]')
+  dotX.value = 8
+  dotY.value = 8
+  score.value = 0
+  allEaten.value = false
+  buildGhostSpawnPool(containerRect, cards)
+  for (const ghost of ghosts.value) {
+    const pos = randomValidPosition()
+    ghost.x = pos.x
+    ghost.y = pos.y
+  }
+  pellets.value = generatePellets(containerRect, cards)
+}
+
+let resizeObserver: ResizeObserver | null = null
+let lastWidth = 0
+
+onMounted(async () => {
+  window.addEventListener('keydown', handleKeyDown)
+  await initGame()
+  ghostInterval = setInterval(stepGhosts, 40)
+  lastWidth = window.innerWidth
+  resizeObserver = new ResizeObserver(() => {
+    if (window.innerWidth !== lastWidth) {
+      lastWidth = window.innerWidth
+      initGame()
+    }
+  })
+  resizeObserver.observe(document.body)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown)
+  if (ghostInterval) clearInterval(ghostInterval)
+  resizeObserver?.disconnect()
+})
 
 const dialogKey = ref<string | null>(null)
 
@@ -148,12 +452,47 @@ const closeDialog = () => {
 }
 
 .cards {
+  position: relative;
   border: 1px solid #f5e342;
   padding: 16px;
   display: grid;
   grid-template-columns: 300px 200px 200px 300px;
   grid-template-rows: 150px 200px 150px 150px;
-  gap: 20px;
+  gap: 16px;
+}
+
+.dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f5e342;
+  box-shadow: 0 0 6px #f5e342, 0 0 12px #f5e34280;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10;
+  transition: left 0.08s linear, top 0.08s linear;
+}
+
+.ghost {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9;
+}
+
+.pellet {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .card {

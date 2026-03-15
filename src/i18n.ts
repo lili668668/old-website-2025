@@ -5,6 +5,7 @@ export const i18n = createI18n({
   legacy: false,
   locale: Lang.ZH,
   fallbackLocale: Lang.EN,
+  warnHtmlMessage: false,
 })
 
 const loadedLocales = new Set<Lang>()
