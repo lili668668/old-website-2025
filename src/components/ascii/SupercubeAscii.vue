@@ -61,29 +61,17 @@ const asciiArt = `                                     .:-==-:.
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: auto;
+    overflow: hidden;
     background-color: transparent;
 }
 
 .supercube-ascii {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 8px;
+    font-size: clamp(2px, 1vw, 12px);
     line-height: 1;
     white-space: pre;
     color: currentColor;
     margin: 0;
     padding: 1rem;
-}
-
-@media (min-width: 768px) {
-    .supercube-ascii {
-        font-size: 10px;
-    }
-}
-
-@media (min-width: 1024px) {
-    .supercube-ascii {
-        font-size: 12px;
-    }
 }
 </style>

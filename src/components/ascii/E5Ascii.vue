@@ -43,29 +43,17 @@ const asciiArt = `****+=+**###*####%%%%%#**#%%%%%%%%%%%%%#%%%%%#*#%##%%#####*%@%
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: auto;
+    overflow: hidden;
     background-color: transparent;
 }
 
 .e5-ascii {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 6px;
+    font-size: clamp(2px, 0.8vw, 10px);
     line-height: 1;
     white-space: pre;
     color: currentColor;
     margin: 0;
     padding: 1rem;
-}
-
-@media (min-width: 768px) {
-    .e5-ascii {
-        font-size: 8px;
-    }
-}
-
-@media (min-width: 1024px) {
-    .e5-ascii {
-        font-size: 10px;
-    }
 }
 </style>
