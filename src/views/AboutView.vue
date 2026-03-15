@@ -88,7 +88,7 @@ import { useLangRoute } from '@/composables/useLangRoute'
 import originImg from '@/assets/ballfish/origin.png'
 import winkImg from '@/assets/ballfish/wink.png'
 import { Lang } from '@/constants/Lang'
-import BaseDialog from '@/components/BaseDialog.vue'
+import BaseDialog from '@/components/base/BaseDialog.vue'
 
 const modalText = ref('')
 const { t } = useI18n()

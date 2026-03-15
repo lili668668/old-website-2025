@@ -102,7 +102,7 @@ import imgWink from '../assets/ballfish/wink.png'
 import { useI18n } from 'vue-i18n'
 import { useNavigationStore } from '../stores/navigation'
 import { useLangRoute } from '../composables/useLangRoute'
-import BaseDialog from '../components/BaseDialog.vue'
+import BaseDialog from '../components/base/BaseDialog.vue'
 
 const { t } = useI18n()
 const { getPath } = useLangRoute()
