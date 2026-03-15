@@ -3,7 +3,12 @@
     <div :class="$style.output">
       <p :class="$style.title">{{ t('title.experience') }}</p>
       <p :class="$style.subtitle">{{ t('subtitle.experience') }}</p>
-      <p :class="$style.subtitle">Score: {{ score }}</p>
+      <div :class="$style.gameBar">
+        <button :class="$style.toggleBtn" @click="gameVisible = !gameVisible">
+          {{ gameVisible ? 'Hide Game' : 'Show Game' }}
+        </button>
+        <p :class="$style.subtitle">Score: {{ score }}</p>
+      </div>
     </div>
     <div :class="$style.cards" ref="cardsRef">
       <div
@@ -26,27 +31,31 @@
           </li>
         </ul>
       </div>
-      <div
-        v-for="p in pellets"
-        :key="p.id"
-        :class="$style.pellet"
-        :style="{ left: p.x + 'px', top: p.y + 'px' }"
-      />
-      <div
-        v-for="(ghost, i) in ghosts"
-        :key="'ghost-' + i"
-        :class="$style.ghost"
-        :style="{
-          left: ghost.x + 'px',
-          top: ghost.y + 'px',
-          background: ghost.color,
-          boxShadow: `0 0 6px ${ghost.color}, 0 0 12px ${ghost.color}80`,
-        }"
-      />
-      <div
-        :class="$style.dot"
-        :style="{ left: dotX + 'px', top: dotY + 'px' }"
-      />
+      <template v-if="gameVisible">
+        <div
+          v-for="p in pellets"
+          :key="p.id"
+          :class="$style.pellet"
+          :style="{ left: p.x + 'px', top: p.y + 'px' }"
+        />
+        <div
+          v-for="(ghost, i) in ghosts"
+          :key="'ghost-' + i"
+          :class="$style.ghost"
+          :style="{
+            left: ghost.x + 'px',
+            top: ghost.y + 'px',
+            background: ghost.color,
+            boxShadow: `0 0 6px ${ghost.color}, 0 0 12px ${ghost.color}80`,
+          }"
+        />
+        <img
+          :class="$style.dot"
+          :src="wink ? imgWink : imgOrigin"
+          :style="{ left: dotX + 'px', top: dotY + 'px', transform: `translate(-50%, -50%) rotate(${dotRotation}deg)` }"
+          alt="player"
+        />
+      </template>
     </div>
 
     <BaseDialog :open="!!dialogKey" :title="dialogKey ? t(`experienceKey.${dialogKey}`) : ''" @close="closeDialog">
@@ -61,6 +70,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import imgOrigin from '../assets/ballfish/origin.png'
+import imgWink from '../assets/ballfish/wink.png'
 import { useI18n } from 'vue-i18n'
 import { useNavigationStore } from '../stores/navigation'
 import { useLangRoute } from '../composables/useLangRoute'
@@ -119,6 +130,10 @@ interface Pellet { id: number; x: number; y: number }
 const pellets = ref<Pellet[]>([])
 const allEaten = ref(false)
 const score = ref(0)
+const gameVisible = ref(true)
+const dotRotation = ref(0)
+const wink = ref(false)
+let winkInterval: ReturnType<typeof setInterval> | null = null
 
 const generatePellets = (containerRect: DOMRect, cards: NodeListOf<Element>) => {
   const W = containerRect.width
@@ -216,10 +231,10 @@ const handleKeyDown = (e: KeyboardEvent) => {
   const cards = container.querySelectorAll('[data-card]')
 
   let dx = 0, dy = 0
-  if (e.key === 'ArrowLeft') dx = -1
-  if (e.key === 'ArrowRight') dx = 1
-  if (e.key === 'ArrowUp') dy = -1
-  if (e.key === 'ArrowDown') dy = 1
+  if (e.key === 'ArrowLeft')  { dx = -1; dotRotation.value = 0 }
+  if (e.key === 'ArrowRight') { dx =  1; dotRotation.value = 180 }
+  if (e.key === 'ArrowUp')    { dy = -1; dotRotation.value = 90 }
+  if (e.key === 'ArrowDown')  { dy =  1; dotRotation.value = 270 }
 
   for (let i = 0; i < STEP; i++) {
     const newX = dotX.value + dx
@@ -231,6 +246,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
   collectPellets()
   checkGhostCollision()
 }
+
 
 const frightenedUntil = ref(0)
 
@@ -326,6 +342,7 @@ const stepGhosts = () => {
       }
     }
   }
+  checkGhostCollision()
 }
 
 const initGame = async () => {
@@ -354,6 +371,7 @@ onMounted(async () => {
   window.addEventListener('keydown', handleKeyDown)
   await initGame()
   ghostInterval = setInterval(stepGhosts, 25)
+  winkInterval = setInterval(() => { wink.value = !wink.value }, 400)
   lastWidth = window.innerWidth
   resizeObserver = new ResizeObserver(() => {
     if (window.innerWidth !== lastWidth) {
@@ -367,6 +385,7 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
   if (ghostInterval) clearInterval(ghostInterval)
+  if (winkInterval) clearInterval(winkInterval)
   resizeObserver?.disconnect()
 })
 
@@ -409,6 +428,29 @@ const closeDialog = () => {
   font-size: var(--p-font-size);
   color: var(--text-color);
   margin: 0;
+}
+
+.gameBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.toggleBtn {
+  background: none;
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-size: var(--p-font-size);
+  padding: 2px 10px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.toggleBtn:hover {
+  opacity: 1;
 }
 
 .university {
@@ -458,7 +500,6 @@ const closeDialog = () => {
 
 .cards {
   position: relative;
-  border: 1px solid #f5e342;
   padding: 16px;
   display: grid;
   grid-template-columns: 300px 200px 200px 300px;
@@ -468,15 +509,12 @@ const closeDialog = () => {
 
 .dot {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #f5e342;
-  box-shadow: 0 0 6px #f5e342, 0 0 12px #f5e34280;
-  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
   pointer-events: none;
   z-index: 10;
-  transition: left 0.08s linear, top 0.08s linear;
+  transition: left 0.08s linear, top 0.08s linear, transform 0.1s ease;
 }
 
 .ghost {
