@@ -65,6 +65,33 @@
         </li>
       </ul>
     </BaseDialog>
+
+    <div v-if="gameVisible" :class="$style.dpad">
+      <button
+        :class="[$style.dpadBtn, $style.dpadUp]"
+        @pointerdown.prevent="startMove('ArrowUp')"
+        @pointerup="stopMove"
+        @pointerleave="stopMove"
+      >▲</button>
+      <button
+        :class="[$style.dpadBtn, $style.dpadLeft]"
+        @pointerdown.prevent="startMove('ArrowLeft')"
+        @pointerup="stopMove"
+        @pointerleave="stopMove"
+      >◀</button>
+      <button
+        :class="[$style.dpadBtn, $style.dpadRight]"
+        @pointerdown.prevent="startMove('ArrowRight')"
+        @pointerup="stopMove"
+        @pointerleave="stopMove"
+      >▶</button>
+      <button
+        :class="[$style.dpadBtn, $style.dpadDown]"
+        @pointerdown.prevent="startMove('ArrowDown')"
+        @pointerup="stopMove"
+        @pointerleave="stopMove"
+      >▼</button>
+    </div>
   </div>
 </template>
 
@@ -218,23 +245,20 @@ const collectPellets = () => {
 }
 
 // --- player ---
-const handleKeyDown = (e: KeyboardEvent) => {
-  if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return
+const movePlayer = (direction: string) => {
   if (dialogKey.value) return
 
   const container = cardsRef.value
   if (!container) return
 
-  e.preventDefault()
-
   const containerRect = container.getBoundingClientRect()
   const cards = container.querySelectorAll('[data-card]')
 
   let dx = 0, dy = 0
-  if (e.key === 'ArrowLeft')  { dx = -1; dotRotation.value = 0 }
-  if (e.key === 'ArrowRight') { dx =  1; dotRotation.value = 180 }
-  if (e.key === 'ArrowUp')    { dy = -1; dotRotation.value = 90 }
-  if (e.key === 'ArrowDown')  { dy =  1; dotRotation.value = 270 }
+  if (direction === 'ArrowLeft')  { dx = -1; dotRotation.value = 0 }
+  if (direction === 'ArrowRight') { dx =  1; dotRotation.value = 180 }
+  if (direction === 'ArrowUp')    { dy = -1; dotRotation.value = 90 }
+  if (direction === 'ArrowDown')  { dy =  1; dotRotation.value = 270 }
 
   for (let i = 0; i < STEP; i++) {
     const newX = dotX.value + dx
@@ -245,6 +269,26 @@ const handleKeyDown = (e: KeyboardEvent) => {
   }
   collectPellets()
   checkGhostCollision()
+}
+
+let dpadInterval: ReturnType<typeof setInterval> | null = null
+
+const startMove = (direction: string) => {
+  movePlayer(direction)
+  dpadInterval = setInterval(() => movePlayer(direction), 80)
+}
+
+const stopMove = () => {
+  if (dpadInterval) {
+    clearInterval(dpadInterval)
+    dpadInterval = null
+  }
+}
+
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return
+  e.preventDefault()
+  movePlayer(e.key)
 }
 
 
@@ -386,6 +430,7 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown)
   if (ghostInterval) clearInterval(ghostInterval)
   if (winkInterval) clearInterval(winkInterval)
+  if (dpadInterval) clearInterval(dpadInterval)
   resizeObserver?.disconnect()
 })
 
@@ -597,6 +642,62 @@ const closeDialog = () => {
   margin: 0;
   padding-left: 18px;
   text-align: left;
+}
+
+.dpad {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dpadBtn {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  touch-action: none;
+  transition: background 0.1s;
+}
+
+.dpadBtn:active {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.dpadUp {
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dpadDown {
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dpadLeft {
+  top: 50%;
+  left: 6px;
+  transform: translateY(-50%);
+}
+
+.dpadRight {
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
 }
 
 @media (max-width: 1350px) {
