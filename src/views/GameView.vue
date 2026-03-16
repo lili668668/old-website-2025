@@ -17,13 +17,9 @@
 
     <div :class="$style.info">
       <p :class="$style.description">{{ t(`game.${current.key}.description`) }}</p>
-      <a :class="$style.link" :href="t(`game.${current.key}.link`)" target="_blank" rel="noopener noreferrer">
-        {{ t(`game.${current.key}.link`) }}
-      </a>
       <CursorSelector
         :items="selectorItems"
         :modelValue="0"
-        @confirm="currentIndex = $event"
       />
     </div>
 
@@ -39,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useNavigationStore } from '@/stores/navigation'
 import { useLangRoute } from '../composables/useLangRoute'
@@ -72,6 +68,15 @@ function prev() {
 function next() {
   if (currentIndex.value < items.length - 1) currentIndex.value++
 }
+
+function onKeyDown(e: KeyboardEvent) {
+  if (e.key === 'ArrowLeft') prev()
+  else if (e.key === 'ArrowRight') next()
+  else if (e.key === 'Enter') window.open(t(`game.${current.value.key}.link`), '_blank')
+}
+
+onMounted(() => window.addEventListener('keydown', onKeyDown))
+onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 </script>
 
 <style module>
