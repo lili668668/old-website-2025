@@ -1,9 +1,5 @@
 <template>
-  <div :class="$style.container" tabindex="0" @keydown="onKeyDown" ref="containerRef">
-    <div :class="$style.header">
-      <span :class="$style.title">{{ current.name }}</span>
-      <span :class="$style.index">{{ currentIndex + 1 }} / {{ items.length }}</span>
-    </div>
+  <div :class="$style.container">
 
     <div :class="$style.stage">
       <button :class="[$style.navBtn, $style.navLeft]" @click="prev" :disabled="currentIndex === 0">
@@ -19,10 +15,22 @@
       </button>
     </div>
 
+    <div :class="$style.info">
+      <p :class="$style.description">{{ t(`game.${current.key}.description`) }}</p>
+      <a :class="$style.link" :href="t(`game.${current.key}.link`)" target="_blank" rel="noopener noreferrer">
+        {{ t(`game.${current.key}.link`) }}
+      </a>
+      <CursorSelector
+        :items="selectorItems"
+        :modelValue="0"
+        @confirm="currentIndex = $event"
+      />
+    </div>
+
     <div :class="$style.dots">
       <span
         v-for="(item, i) in items"
-        :key="item.name"
+        :key="item.key"
         :class="[$style.dot, i === currentIndex && $style.dotActive]"
         @click="currentIndex = i"
       />
@@ -31,50 +39,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useNavigationStore } from '@/stores/navigation'
 import { useLangRoute } from '../composables/useLangRoute'
 import BotfishAscii from '@/components/ascii/BotfishAscii.vue'
 import SupercubeAscii from '@/components/ascii/SupercubeAscii.vue'
 import E5Ascii from '@/components/ascii/E5Ascii.vue'
+import CursorSelector from '@/components/base/CursorSelector.vue'
 
+const { t } = useI18n()
 const { getPath } = useLangRoute()
 const navigationStore = useNavigationStore()
 navigationStore.setBackPath(getPath(''))
 
 const items = [
-  { name: 'Botfish', component: BotfishAscii },
-  { name: 'Supercube', component: SupercubeAscii },
-  { name: 'E5', component: E5Ascii },
+  { key: 'botfish', component: BotfishAscii },
+  { key: 'supercube', component: SupercubeAscii },
+  { key: 'e5', component: E5Ascii },
 ]
 
 const currentIndex = ref(0)
-const current = ref(items[0])
-
-const containerRef = ref<HTMLElement | null>(null)
+const current = computed(() => items[currentIndex.value])
+const selectorItems = computed(() =>
+  [{ label: t('common.link'), key: 0 }]
+)
 
 function prev() {
-  if (currentIndex.value > 0) {
-    currentIndex.value--
-    current.value = items[currentIndex.value]
-  }
+  if (currentIndex.value > 0) currentIndex.value--
 }
 
 function next() {
-  if (currentIndex.value < items.length - 1) {
-    currentIndex.value++
-    current.value = items[currentIndex.value]
-  }
+  if (currentIndex.value < items.length - 1) currentIndex.value++
 }
-
-function onKeyDown(e: KeyboardEvent) {
-  if (e.key === 'ArrowRight') next()
-  else if (e.key === 'ArrowLeft') prev()
-}
-
-onMounted(() => {
-  containerRef.value?.focus()
-})
 </script>
 
 <style module>
@@ -88,29 +85,12 @@ onMounted(() => {
   min-height: 100%;
 }
 
-.header {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-.title {
-  font-size: var(--title-font-size);
-  color: var(--accent-color);
-}
-
-.index {
-  font-size: var(--p-font-size);
-  color: var(--font-color);
-  opacity: 0.6;
-}
-
 .stage {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
+  margin-top: 16px;
 }
 
 .artWrapper {
@@ -161,5 +141,28 @@ onMounted(() => {
 
 .dotActive {
   opacity: 1;
+}
+
+.info {
+  margin-top: 20px;
+  text-align: center;
+  max-width: 600px;
+}
+
+.description {
+  font-size: var(--p-font-size);
+  color: var(--font-color);
+  margin-bottom: 8px;
+}
+
+.link {
+  font-size: var(--p-font-size);
+  color: var(--accent-color);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.link:hover {
+  text-decoration: underline;
 }
 </style>

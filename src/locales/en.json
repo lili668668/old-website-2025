@@ -1,4 +1,10 @@
 {
+  "common": {
+    "hideGame": "Hide Game",
+    "showGame": "Show Game",
+    "score": "Score:",
+    "link": "Click to see ->"
+  },
   "title": {
     "home": "Welcome to Ballfish's Little Fish Tank",
     "about": "Character Introduction",
@@ -102,5 +108,22 @@
     "COSCUP": "Joined COSCUP (Conference for Open Source Coders, Users, and Promoters) in 2019, mainly responsible for conference program affairs.\nContinued handling program affairs in 2020.\nIn 2021, served as Intern General Coordinator, learning how COSCUP events are organized.\n<span style=\"color: #f5e342\">In 2022–2023, served as General Coordinator, helping organize the respective conferences.</span>\nIn 2024–2025, served as Marketing Team Member, responsible for writing promotional content.\nAlso served as Finance Team Member in 2025, responsible for accounting and recording that year's financial details.\nIn 2026, served as Finance Team Leader, assisting with financial operations.",
     "g0v": "Started engaging with g0v (Zero Government) Summit Biennial Conference in 2025. Served as Administrative Team Leader for g0v Summit 2026, responsible for conference administrative affairs.",
     "else": "Personal life and hobbies:\nBeyond the typical ACG (Animation, Comics, Games) interests.\nFrom 2019 to 2023, participated in an amateur dragon boat team, competing in: New Taipei City Dragon Boat President's Cup, Taipei City International Dragon Boat Racing Championship, Hualien International Dragon Boat Festival, Kaohsiung City Cup, and other races.\nIn 2024, participated in a working holiday in Japan, experiencing Japanese culture for about a year.\nFrom 2025 to 2026, started exploring improv theater and learning performing arts."
+  },
+  "game": {
+    "botfish": {
+      "title": "Bot Fish",
+      "description": "A Line bot that chats with you, and it's free!",
+      "link": "https://botfishweb.ballfish.io/"
+    },
+    "e5": {
+      "title": "Parakeet Brothers Meme Generator",
+      "description": "Borrowed Docomo's mascot images to let everyone freely create Parakeet Brothers memes.",
+      "link": "https://ballfish.io/docomo-poinko-textmaker/"
+    },
+    "supercube": {
+      "title": "Super Cube",
+      "description": "A game created during university as a college research project, aimed at teaching children programming. Currently for display only, as it may no longer run on modern computers.",
+      "link": "https://ballfish.io/SuperCubeWeb/"
+    }
   }
 }
