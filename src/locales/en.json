@@ -124,6 +124,21 @@
       "title": "Super Cube",
       "description": "A game created during university as a college research project, aimed at teaching children programming. Currently for display only, as it may no longer run on modern computers.",
       "link": "https://ballfish.io/SuperCubeWeb/"
+    },
+    "memo": {
+      "title": "Memo NodeJS",
+      "description": "An early terminal-based memo tool.",
+      "link": "https://github.com/lili668668/memo"
+    },
+    "localMemoCli": {
+      "title": "Memo Rust",
+      "description": "Young and naive, thought JavaScript could rule the world, then discovered NodeJS startup speed was unbearably slow, so rewrote the memo tool in Rust.",
+      "link": "https://github.com/lili668668/local-memo-cli"
+    },
+    "bokoyaki": {
+      "title": "Bokoyaki",
+      "description": "A super simple Bokoyaki game made on a whim, and a tribute to the flash Takoyaki game from the old days.",
+      "link": "https://ballfish.io/bokoyaki"
     }
   }
 }

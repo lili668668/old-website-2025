@@ -124,6 +124,21 @@
       "title": "Super Cube",
       "description": "大學時，做大專生研究計劃的遊戲。目的是教小孩子寫程式，目前僅供展示，因為可能已經沒有辦法在現在的電腦上跑起來了。",
       "link": "https://ballfish.io/SuperCubeWeb/"
+    },
+    "memo": {
+      "title": "Memo NodeJS",
+      "description": "早期做的一個終端機用的 memo 工具。",
+      "link": "https://github.com/lili668668/memo"
+    },
+    "localMemoCli": {
+      "title": "Memo Rust",
+      "description": "年輕不懂事，覺得 JavaScript 可以稱霸世界，然後發現 NodeJS 的啟動速度慢到玩無法忍受，所以用 Rust 改寫了 memo 這個工具。",
+      "link": "https://github.com/lili668668/local-memo-cli"
+    },
+    "bokoyaki": {
+      "title": "球魚燒",
+      "description": "心血來潮做的超簡易球魚燒遊戲，以及緬懷以前玩的 flash 章魚燒遊戲。",
+      "link": "https://ballfish.io/bokoyaki"
     }
   }
 }

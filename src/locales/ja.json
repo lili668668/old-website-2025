@@ -6,7 +6,7 @@
     "link": "クリックして見る ->"
   },
   "title": {
-    "home": "球魚の小さな水槽へようこそ",
+    "home": "ボール魚の小さな水槽へようこそ",
     "about": "キャラクター",
     "skill": "スキルツリー",
     "experience": "冒険譚",
@@ -14,9 +14,9 @@
   },
   "subtitle": {
     "home": "この水槽の中を探索してみよう",
-    "about": "球魚について",
-    "skill": "球魚は何ができる？",
-    "experience": "球魚の経歴",
+    "about": "ボール魚について",
+    "skill": "ボール魚は何ができる？",
+    "experience": "ボール魚の経歴",
     "game": "ポートフォリオ（とゲーム）"
   },
   "about": {
@@ -124,6 +124,21 @@
       "title": "Super Cube",
       "description": "大学時代に大学生研究プロジェクトとして制作したゲーム。子どもたちにプログラミングを教えることを目的としています。現在は展示用のみで、現代のコンピューターでは動作しない可能性があります。",
       "link": "https://ballfish.io/SuperCubeWeb/"
+    },
+    "memo": {
+      "title": "Memo NodeJS",
+      "description": "初期に作ったターミナル用のメモツール。",
+      "link": "https://github.com/lili668668/memo"
+    },
+    "localMemoCli": {
+      "title": "Memo Rust",
+      "description": "若気の至りでJavaScriptが世界を制覇できると思っていたが、NodeJSの起動速度が耐えられないほど遅いことに気づき、RustでMemoツールを書き直した。",
+      "link": "https://github.com/lili668668/local-memo-cli"
+    },
+    "bokoyaki": {
+      "title": "ボール魚焼き",
+      "description": "思いつきで作った超シンプルなボール魚焼きゲーム。昔遊んでいたflashたこ焼きゲームへのオマージュ。",
+      "link": "https://ballfish.io/bokoyaki"
     }
   }
 }

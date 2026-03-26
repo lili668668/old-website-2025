@@ -1,5 +1,8 @@
 <template>
   <div :class="$style.container">
+    <div>
+      <p :class="$style.title">{{ t(`game.${current.key}.title`) }}</p>
+    </div>
 
     <div :class="$style.stage">
       <button :class="[$style.navBtn, $style.navLeft]" @click="prev" :disabled="currentIndex === 0">
@@ -42,6 +45,8 @@ import { useLangRoute } from '../composables/useLangRoute'
 import BotfishAscii from '@/components/ascii/BotfishAscii.vue'
 import SupercubeAscii from '@/components/ascii/SupercubeAscii.vue'
 import E5Ascii from '@/components/ascii/E5Ascii.vue'
+import MemoAscii from '@/components/ascii/MemoAscii.vue'
+import BokoyakiAscii from '@/components/ascii/BokoyakiAscii.vue'
 import CursorSelector from '@/components/base/CursorSelector.vue'
 
 const { t } = useI18n()
@@ -50,6 +55,9 @@ const navigationStore = useNavigationStore()
 navigationStore.setBackPath(getPath(''))
 
 const items = [
+  { key: 'bokoyaki', component: BokoyakiAscii },
+  { key: 'memo', component: MemoAscii },
+  { key: 'localMemoCli', component: MemoAscii },
   { key: 'botfish', component: BotfishAscii },
   { key: 'supercube', component: SupercubeAscii },
   { key: 'e5', component: E5Ascii },
@@ -152,6 +160,11 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
   margin-top: 20px;
   text-align: center;
   max-width: 600px;
+}
+
+.title {
+  font-size: var(--title-font-size);
+  color: var(--font-color);
 }
 
 .description {
