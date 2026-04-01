@@ -29,43 +29,79 @@
           </marker>
         </defs>
 
-        <image :href="currentFrame" x="961" y="169" width="512" height="512"
-                style="image-rendering: pixelated;" />
+        <image
+          :href="currentFrame"
+          x="961"
+          y="169"
+          width="512"
+          height="512"
+          style="image-rendering: pixelated"
+        />
 
-        <polyline :class="$style.animatedLine" points="1201,300 1074,80 900,80"
-                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <polyline
+          :class="$style.animatedLine"
+          points="1201,300 1074,80 900,80"
+          fill="none"
+          stroke-width="6"
+          style="stroke: var(--accent-color)"
+          marker-end="url(#about-arrow)"
+        />
         <foreignObject :x="nameX" y="40" :width="nameWidth" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.name') }}
           </div>
         </foreignObject>
 
-        <polyline :class="$style.animatedLine" points="1090,441 940,360 800,360"
-                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <polyline
+          :class="$style.animatedLine"
+          points="1090,441 940,360 800,360"
+          fill="none"
+          stroke-width="6"
+          style="stroke: var(--accent-color)"
+          marker-end="url(#about-arrow)"
+        />
         <foreignObject :x="nicknameX" y="325" :width="nicknameWidth" height="80">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.nickname') }}
           </div>
         </foreignObject>
 
-        <polyline :class="$style.animatedLine" :points="charactorPoints"
-                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <polyline
+          :class="$style.animatedLine"
+          :points="charactorPoints"
+          fill="none"
+          stroke-width="6"
+          style="stroke: var(--accent-color)"
+          marker-end="url(#about-arrow)"
+        />
         <foreignObject x="0" y="580" width="800" :height="charactorHeight">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.charactor') }}
           </div>
         </foreignObject>
 
-        <polyline :class="$style.animatedLine" :points="dreamPoints"
-                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <polyline
+          :class="$style.animatedLine"
+          :points="dreamPoints"
+          fill="none"
+          stroke-width="6"
+          style="stroke: var(--accent-color)"
+          marker-end="url(#about-arrow)"
+        />
         <foreignObject x="1520" :y="dreamTextY" width="900" height="160">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.dream') }}
           </div>
         </foreignObject>
 
-        <polyline :class="$style.animatedLine" points="1409,500 1594,300 1750,300"
-                  fill="none" stroke-width="6" style="stroke: var(--accent-color)" marker-end="url(#about-arrow)" />
+        <polyline
+          :class="$style.animatedLine"
+          points="1409,500 1594,300 1750,300"
+          fill="none"
+          stroke-width="6"
+          style="stroke: var(--accent-color)"
+          marker-end="url(#about-arrow)"
+        />
         <foreignObject x="1800" y="200" width="760" :height="interestHeight">
           <div xmlns="http://www.w3.org/1999/xhtml" :class="$style.label">
             {{ t('about.interest') }}
@@ -96,11 +132,11 @@ const { getPath, lang } = useLangRoute()
 const navigationStore = useNavigationStore()
 
 const bodyParts = [
-  { key: 'name',  top: '20%',  left: '40%' },
+  { key: 'name', top: '20%', left: '40%' },
   { key: 'nickname', top: '53%', left: '28%' },
   { key: 'charactor', top: '70%', left: '25%' },
   { key: 'dream', top: '60%', left: '55%' },
-  { key: 'interest',  top: '65%', left: '90%' },
+  { key: 'interest', top: '65%', left: '90%' },
 ]
 
 const frames = [originImg, winkImg]
@@ -279,13 +315,21 @@ onUnmounted(() => {
 }
 
 @keyframes drawLine {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes wipeIn {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0% 0 0); }
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0% 0 0);
+  }
 }
 
 .mobileFish {

@@ -29,31 +29,31 @@ const asciiArt = `****+=+**###*####%%%%%#**#%%%%%%%%%%%%%#%%%%%#*#%##%%#####*%@%
 -::::::=+**++==+==+**+*++===++**+*###%*#*###*#%#+##*+=+---==++++++++++++********+#**#*********++++++
 :-::::::*#*##+***=+**=*+*+=++*****###%+#+**%++#+*##*++++****+*+=*****++***+*+***+#++**+#++*+=+++++**
 ---:::::*#*+*++++++=++++++===+++***+*%#**#*%**%*####+#****++++*+*++++*+++*++++*****+*****+**+******#
-=----:::-:-:--::------:---------=+**##**##**#*******#*+*+==++=++==+==++==++****+++++++*************#`;
+=----:::-:-:--::------:---------=+**##**##**#*******#*+*+==++=++==+==++==++****+++++++*************#`
 </script>
 
 <template>
-    <div class="e5-ascii-wrapper">
-        <pre class="e5-ascii" aria-label="E5 ASCII Art">{{ asciiArt }}</pre>
-    </div>
+  <div class="e5-ascii-wrapper">
+    <pre class="e5-ascii" aria-label="E5 ASCII Art">{{ asciiArt }}</pre>
+  </div>
 </template>
 
 <style scoped>
 .e5-ascii-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: transparent;
 }
 
 .e5-ascii {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(2px, 0.8vw, 10px);
-    line-height: 1;
-    white-space: pre;
-    color: currentColor;
-    margin: 0;
-    padding: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(2px, 0.8vw, 10px);
+  line-height: 1;
+  white-space: pre;
+  color: currentColor;
+  margin: 0;
+  padding: 1rem;
 }
 </style>

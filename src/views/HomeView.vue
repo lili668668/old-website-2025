@@ -13,10 +13,7 @@
         <span :class="$style.cursor">{{ index === selectedIndex ? '>' : ' ' }}</span>
         <span :class="$style.key">[{{ item.key }}]</span>
         <span :class="$style.label">{{ item.name }}</span>
-        <span
-          v-if="index === selectedIndex"
-          :class="$style.tip"
-        >
+        <span v-if="index === selectedIndex" :class="$style.tip">
           &ensp;- {{ t(`subtitle.${item.value}`) }}
         </span>
       </RouterLink>
@@ -114,7 +111,7 @@ onUnmounted(() => {
 
 .title {
   font-size: var(--title-font-size);
-  color: var(--accent-color)
+  color: var(--accent-color);
 }
 
 .subtitle {
@@ -156,7 +153,13 @@ onUnmounted(() => {
 }
 
 @keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 </style>

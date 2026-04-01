@@ -13,17 +13,18 @@
         <component :is="current.component" />
       </div>
 
-      <button :class="[$style.navBtn, $style.navRight]" @click="next" :disabled="currentIndex === items.length - 1">
+      <button
+        :class="[$style.navBtn, $style.navRight]"
+        @click="next"
+        :disabled="currentIndex === items.length - 1"
+      >
         <span>&#8594;</span>
       </button>
     </div>
 
     <div :class="$style.info">
       <p :class="$style.description">{{ t(`game.${current.key}.description`) }}</p>
-      <CursorSelector
-        :items="selectorItems"
-        :modelValue="0"
-      />
+      <CursorSelector :items="selectorItems" :modelValue="0" />
     </div>
 
     <div :class="$style.dots">
@@ -65,9 +66,7 @@ const items = [
 
 const currentIndex = ref(0)
 const current = computed(() => items[currentIndex.value])
-const selectorItems = computed(() =>
-  [{ label: t('common.link'), key: 0 }]
-)
+const selectorItems = computed(() => [{ label: t('common.link'), key: 0 }])
 
 function prev() {
   if (currentIndex.value > 0) currentIndex.value--

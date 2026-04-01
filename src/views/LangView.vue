@@ -2,11 +2,7 @@
   <div :class="$style.container">
     <div>
       <p :class="$style.line">Select your language:</p>
-      <CursorSelector
-        :items="languages"
-        v-model="selectedIndex"
-        @confirm="onConfirm"
-      />
+      <CursorSelector :items="languages" v-model="selectedIndex" @confirm="onConfirm" />
     </div>
   </div>
 </template>
@@ -47,6 +43,6 @@ function onConfirm(index: number) {
 
 .line {
   font-size: var(--title-font-size);
-  color: var(--accent-color)
+  color: var(--accent-color);
 }
 </style>

@@ -36,31 +36,31 @@ const asciiArt = `
                                                                                 
                                                                                 
                                                                                 
-                                                                                `;
+                                                                                `
 </script>
 
 <template>
-    <div class="botfish-ascii-wrapper">
-        <pre class="botfish-ascii" aria-label="Botfish ASCII Art">{{ asciiArt }}</pre>
-    </div>
+  <div class="botfish-ascii-wrapper">
+    <pre class="botfish-ascii" aria-label="Botfish ASCII Art">{{ asciiArt }}</pre>
+  </div>
 </template>
 
 <style scoped>
 .botfish-ascii-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: transparent;
 }
 
 .botfish-ascii {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(2px, 1vw, 12px);
-    line-height: 1;
-    white-space: pre;
-    color: currentColor;
-    margin: 0;
-    padding: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(2px, 1vw, 12px);
+  line-height: 1;
+  white-space: pre;
+  color: currentColor;
+  margin: 0;
+  padding: 1rem;
 }
 </style>

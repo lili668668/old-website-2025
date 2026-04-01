@@ -47,4 +47,3 @@ router.beforeEach(async (to) => {
     await setLocale(lang as Lang)
   }
 })
-

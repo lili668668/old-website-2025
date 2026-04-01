@@ -11,24 +11,34 @@
       </div>
     </div>
     <div :class="$style.cards" ref="cardsRef">
-      <div
-        v-for="key in experienceKeys"
-        :key="key"
-        :class="[$style.card, $style[key]]"
-        data-card
-      >
+      <div v-for="key in experienceKeys" :key="key" :class="[$style.card, $style[key]]" data-card>
         <div :class="$style.cardHeader">
           <p :class="$style.cardTitle">{{ t(`experienceKey.${key}`) }}</p>
-          <button :class="$style.expandBtn" @click="openDialog(key)" :aria-label="t(`experienceKey.${key}`)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
-              <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+          <button
+            :class="$style.expandBtn"
+            @click="openDialog(key)"
+            :aria-label="t(`experienceKey.${key}`)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <line x1="21" y1="3" x2="14" y2="10" />
+              <line x1="3" y1="21" x2="10" y2="14" />
             </svg>
           </button>
         </div>
         <ul :class="$style.cardList">
-          <li v-for="(line, i) in t(`experience.${key}`).split('\n')" :key="i" v-html="line">
-          </li>
+          <li v-for="(line, i) in t(`experience.${key}`).split('\n')" :key="i" v-html="line"></li>
         </ul>
       </div>
       <template v-if="gameVisible">
@@ -52,13 +62,21 @@
         <img
           :class="$style.dot"
           :src="wink ? imgWink : imgOrigin"
-          :style="{ left: dotX + 'px', top: dotY + 'px', transform: `translate(-50%, -50%) rotate(${dotRotation}deg)` }"
+          :style="{
+            left: dotX + 'px',
+            top: dotY + 'px',
+            transform: `translate(-50%, -50%) rotate(${dotRotation}deg)`,
+          }"
           alt="player"
         />
       </template>
     </div>
 
-    <BaseDialog :open="!!dialogKey" :title="dialogKey ? t(`experienceKey.${dialogKey}`) : ''" @close="closeDialog">
+    <BaseDialog
+      :open="!!dialogKey"
+      :title="dialogKey ? t(`experienceKey.${dialogKey}`) : ''"
+      @close="closeDialog"
+    >
       <ul :class="$style.dialogList">
         <li v-for="(line, i) in dialogKey ? t(`experience.${dialogKey}`).split('\n') : []" :key="i">
           {{ line }}
@@ -72,25 +90,33 @@
         @pointerdown.prevent="startMove('ArrowUp')"
         @pointerup="stopMove"
         @pointerleave="stopMove"
-      >▲</button>
+      >
+        ▲
+      </button>
       <button
         :class="[$style.dpadBtn, $style.dpadLeft]"
         @pointerdown.prevent="startMove('ArrowLeft')"
         @pointerup="stopMove"
         @pointerleave="stopMove"
-      >◀</button>
+      >
+        ◀
+      </button>
       <button
         :class="[$style.dpadBtn, $style.dpadRight]"
         @pointerdown.prevent="startMove('ArrowRight')"
         @pointerup="stopMove"
         @pointerleave="stopMove"
-      >▶</button>
+      >
+        ▶
+      </button>
       <button
         :class="[$style.dpadBtn, $style.dpadDown]"
         @pointerdown.prevent="startMove('ArrowDown')"
         @pointerup="stopMove"
         @pointerleave="stopMove"
-      >▼</button>
+      >
+        ▼
+      </button>
     </div>
   </div>
 </template>
@@ -129,7 +155,8 @@ const dotX = ref(8)
 const dotY = ref(8)
 
 const checkBlocked = (
-  x: number, y: number,
+  x: number,
+  y: number,
   containerRect: DOMRect,
   cards: NodeListOf<Element>,
   radius = COLLISION_RADIUS,
@@ -153,7 +180,11 @@ const checkBlocked = (
 const PELLET_SPACING = 8
 const COLLECT_RADIUS = 10
 
-interface Pellet { id: number; x: number; y: number }
+interface Pellet {
+  id: number
+  x: number
+  y: number
+}
 const pellets = ref<Pellet[]>([])
 const allEaten = ref(false)
 const score = ref(0)
@@ -169,7 +200,7 @@ const generatePellets = (containerRect: DOMRect, cards: NodeListOf<Element>) => 
   const NARROW = 18
 
   // cache card rects relative to container (avoids repeated getBoundingClientRect)
-  const cardRects = Array.from(cards).map(card => {
+  const cardRects = Array.from(cards).map((card) => {
     const r = card.getBoundingClientRect()
     return {
       l: r.left - containerRect.left,
@@ -185,7 +216,8 @@ const generatePellets = (containerRect: DOMRect, cards: NodeListOf<Element>) => 
     for (const c of cardRects) {
       const cx = Math.max(c.l, Math.min(x, c.r))
       const cy = Math.max(c.t, Math.min(y, c.b))
-      const dx = x - cx, dy = y - cy
+      const dx = x - cx,
+        dy = y - cy
       if (dx * dx + dy * dy < COLLISION_RADIUS * COLLISION_RADIUS) return true
     }
     return false
@@ -208,8 +240,9 @@ const generatePellets = (containerRect: DOMRect, cards: NodeListOf<Element>) => 
     let start: number | null = null
     for (let y = 0; y <= H + 1; y++) {
       const blocked = y > H || isBlocked(x, y)
-      if (!blocked && start === null) { start = y }
-      else if (blocked && start !== null) {
+      if (!blocked && start === null) {
+        start = y
+      } else if (blocked && start !== null) {
         if (y - start <= NARROW) tryAdd(x, (start + y - 1) / 2)
         start = null
       }
@@ -221,8 +254,9 @@ const generatePellets = (containerRect: DOMRect, cards: NodeListOf<Element>) => 
     let start: number | null = null
     for (let x = 0; x <= W + 1; x++) {
       const blocked = x > W || isBlocked(x, y)
-      if (!blocked && start === null) { start = x }
-      else if (blocked && start !== null) {
+      if (!blocked && start === null) {
+        start = x
+      } else if (blocked && start !== null) {
         if (x - start <= NARROW) tryAdd((start + x - 1) / 2, y)
         start = null
       }
@@ -234,10 +268,12 @@ const generatePellets = (containerRect: DOMRect, cards: NodeListOf<Element>) => 
 
 const collectPellets = () => {
   const r2 = COLLECT_RADIUS * COLLECT_RADIUS
-  const px = dotX.value, py = dotY.value
+  const px = dotX.value,
+    py = dotY.value
   const before = pellets.value.length
-  pellets.value = pellets.value.filter(p => {
-    const dx = px - p.x, dy = py - p.y
+  pellets.value = pellets.value.filter((p) => {
+    const dx = px - p.x,
+      dy = py - p.y
     return dx * dx + dy * dy > r2
   })
   score.value += before - pellets.value.length
@@ -254,11 +290,24 @@ const movePlayer = (direction: string) => {
   const containerRect = container.getBoundingClientRect()
   const cards = container.querySelectorAll('[data-card]')
 
-  let dx = 0, dy = 0
-  if (direction === 'ArrowLeft')  { dx = -1; dotRotation.value = 0 }
-  if (direction === 'ArrowRight') { dx =  1; dotRotation.value = 180 }
-  if (direction === 'ArrowUp')    { dy = -1; dotRotation.value = 90 }
-  if (direction === 'ArrowDown')  { dy =  1; dotRotation.value = 270 }
+  let dx = 0,
+    dy = 0
+  if (direction === 'ArrowLeft') {
+    dx = -1
+    dotRotation.value = 0
+  }
+  if (direction === 'ArrowRight') {
+    dx = 1
+    dotRotation.value = 180
+  }
+  if (direction === 'ArrowUp') {
+    dy = -1
+    dotRotation.value = 90
+  }
+  if (direction === 'ArrowDown') {
+    dy = 1
+    dotRotation.value = 270
+  }
 
   for (let i = 0; i < STEP; i++) {
     const newX = dotX.value + dx
@@ -291,14 +340,16 @@ const handleKeyDown = (e: KeyboardEvent) => {
   movePlayer(e.key)
 }
 
-
 const frightenedUntil = ref(0)
 
 const checkGhostCollision = () => {
-  const px = dotX.value, py = dotY.value
+  const px = dotX.value,
+    py = dotY.value
   for (const ghost of ghosts.value) {
-    const dx = px - ghost.x, dy = py - ghost.y
-    if (dx * dx + dy * dy < 144) { // 12px = sum of visual radii
+    const dx = px - ghost.x,
+      dy = py - ghost.y
+    if (dx * dx + dy * dy < 144) {
+      // 12px = sum of visual radii
       score.value = 0
       frightenedUntil.value = Date.now() + 5000
       return
@@ -307,7 +358,12 @@ const checkGhostCollision = () => {
 }
 
 type Dir = 0 | 1 | 2 | 3
-const DIR_VECS: [number, number][] = [[1,0],[-1,0],[0,1],[0,-1]]
+const DIR_VECS: [number, number][] = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+]
 
 interface Ghost {
   x: number
@@ -329,7 +385,7 @@ const ghosts = ref<Ghost[]>(
     y: 0,
     color: g.color,
     dir: (i % 4) as Dir,
-  }))
+  })),
 )
 
 const GHOST_VISUAL_RADIUS = 6
@@ -360,7 +416,8 @@ const stepGhosts = () => {
   const containerRect = container.getBoundingClientRect()
   const cards = container.querySelectorAll('[data-card]')
 
-  const px = dotX.value, py = dotY.value
+  const px = dotX.value,
+    py = dotY.value
 
   const frightened = Date.now() < frightenedUntil.value
 
@@ -415,7 +472,9 @@ onMounted(async () => {
   window.addEventListener('keydown', handleKeyDown)
   await initGame()
   ghostInterval = setInterval(stepGhosts, 25)
-  winkInterval = setInterval(() => { wink.value = !wink.value }, 400)
+  winkInterval = setInterval(() => {
+    wink.value = !wink.value
+  }, 400)
   lastWidth = window.innerWidth
   resizeObserver = new ResizeObserver(() => {
     if (window.innerWidth !== lastWidth) {
@@ -443,7 +502,6 @@ const openDialog = (key: string) => {
 const closeDialog = () => {
   dialogKey.value = null
 }
-
 </script>
 
 <style module>
@@ -559,7 +617,10 @@ const closeDialog = () => {
   image-rendering: pixelated;
   pointer-events: none;
   z-index: 10;
-  transition: left 0.08s linear, top 0.08s linear, transform 0.1s ease;
+  transition:
+    left 0.08s linear,
+    top 0.08s linear,
+    transform 0.1s ease;
 }
 
 .ghost {
