@@ -3,4 +3,5 @@ export enum Menu {
   SKILL = 'skill',
   EXPERIENCE = 'experience',
   GAME = 'game',
+  HISTORY = 'history',
 }

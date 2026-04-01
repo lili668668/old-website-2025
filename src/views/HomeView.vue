@@ -43,6 +43,7 @@ const items = [
   { value: Menu.SKILL, name: t('title.skill'), key: '2' },
   { value: Menu.EXPERIENCE, name: t('title.experience'), key: '3' },
   { value: Menu.GAME, name: t('title.game'), key: '4' },
+  { value: Menu.HISTORY, name: t('title.history'), key: '5' },
 ]
 
 const handleKeydown = (event: KeyboardEvent) => {

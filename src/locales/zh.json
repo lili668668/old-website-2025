@@ -10,14 +10,16 @@
     "about": "角色介紹",
     "skill": "技能樹",
     "experience": "冒險談",
-    "game": "好玩遊戲區"
+    "game": "好玩遊戲區",
+    "history": "時光機"
   },
   "subtitle": {
     "home": "來探索一下這個魚缸裡有什麼吧",
     "about": "關於球魚",
     "skill": "球魚會什麼？",
     "experience": "球魚的經歷",
-    "game": "作品集（與遊戲）"
+    "game": "作品集（與遊戲）",
+    "history": "以前的官網們"
   },
   "about": {
     "name": "本名：洪慈吟",

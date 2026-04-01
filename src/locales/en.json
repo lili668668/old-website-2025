@@ -10,14 +10,16 @@
     "about": "Character Introduction",
     "skill": "Skill Tree",
     "experience": "Adventures",
-    "game": "Games"
+    "game": "Games",
+    "history": "Time Machine"
   },
   "subtitle": {
     "home": "Let's explore what's in this fish tank",
     "about": "About Ballfish",
     "skill": "Ballfish's skills",
     "experience": "Ballfish's Experience",
-    "game": "Portfolio (& Games)"
+    "game": "Portfolio (& Games)",
+    "history": "Previous Websites"
   },
   "about": {
     "name": "Name: Tzu-Yin Hong",

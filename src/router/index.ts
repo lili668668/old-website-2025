@@ -36,6 +36,11 @@ export const router = createRouter({
       name: 'game',
       component: () => import('../views/GameView.vue'),
     },
+    {
+      path: '/:lang/history',
+      name: 'histoy',
+      component: () => import('../views/HistoryView.vue'),
+    },
   ],
 })
 
