@@ -89,24 +89,25 @@ onUnmounted(() => {
 }
 
 .circle {
-    position: relative;
-    width: 8px;
-    height: 8px;
-    border: 10px solid transparent;
-    border-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><text x='5' y='5' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='15' y='5' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='25' y='5' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='5' y='15' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='15' y='15' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='25' y='15' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='5' y='25' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='15' y='25' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='25' y='25' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text></svg>") 10 round;
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border: 10px solid transparent;
+  border-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><text x='5' y='5' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='15' y='5' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='25' y='5' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='5' y='15' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='15' y='15' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='25' y='15' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='5' y='25' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='15' y='25' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text><text x='25' y='25' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text></svg>")
+    10 round;
 }
 
 .straight:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: calc(100% + 10px); /* 從邊框外緣開始 */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 10px;
-    height: 24px; /* 符合 gap: 24px */
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='8'><text x='5' y='4' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text></svg>");
-    background-repeat: repeat-y;
-    background-position: center;
+  content: '';
+  position: absolute;
+  top: calc(100% + 10px); /* 從邊框外緣開始 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 24px; /* 符合 gap: 24px */
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='8'><text x='5' y='4' font-size='10' font-family='monospace' fill='%23348feb' text-anchor='middle' dominant-baseline='central'>*</text></svg>");
+  background-repeat: repeat-y;
+  background-position: center;
 }
 
 .container {
