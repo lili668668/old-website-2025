@@ -1,0 +1,1 @@
+var e=`/old-website-2025/assets/origin-BL285k-c.png`,t=`/old-website-2025/assets/wink-Fg3LtFg0.png`;export{t as b,e as c};
