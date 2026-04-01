@@ -26,6 +26,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Typecheck
+        run: pnpm type-check
+
   deploy:
     name: Build & Deploy
     needs: lint
