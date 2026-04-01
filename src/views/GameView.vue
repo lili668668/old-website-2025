@@ -66,7 +66,7 @@ const items = [
 
 const currentIndex = ref(0)
 const current = computed(() => items[currentIndex.value])
-const selectorItems = computed(() => [{ label: t('common.link'), key: 0 }])
+const selectorItems = computed(() => [{ label: t('common.link') }])
 
 function prev() {
   if (currentIndex.value > 0) currentIndex.value--
